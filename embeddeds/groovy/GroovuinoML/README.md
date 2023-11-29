@@ -70,14 +70,21 @@ from "off" to "on" when "button" becomes "high"
 export "Switch!"
 ```
 
-## Requirements
+## How to run scripts
 
-  * The project is delivered as a maven 3 artefact
-  * You need to setup a Java 1.8 SDK in order to use this code
-  * The code relies on the [JVM kernel](https://github.com/mosser/ArduinoML-kernel/tree/master/kernels/jvm) defined in this repository 
-    * `mvn install` it before compiling or running this example
-  * (The code can be compiled using `mvn clean install`)
-  * Or an executable jar can be built using `mvn clean compile assembly:single`
-  * Then, to run the Switch example:
-    * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\Switch.groovy`
-  * ... it is also possible to use the .bat files build.bat and run.bat (Windows)
+  *We assume we are in the GroovuinoML directory*
+
+  * You need to set up a Java 1.8 SDK *(File then Project Setting on IntelliJ)* in order to compile this code with Maven
+  * The code relies on the [JVM kernel](https://github.com/mosser/ArduinoML-kernel/tree/master/kernels/jvm) defined in this repository
+    * You have to install it before compiling or running this example
+    * To do so, run the following command:
+    ```bash
+    cd ..\..\..\kernels\jvm\; mvn clean install; cd ..\..\embeddeds\groovy\GroovuinoML\
+    ```
+  * Create a jar executable using `mvn clean compile assembly:single`
+  * Then, to run the Switch script example:
+    ```bash
+    java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\Switch.groovy
+    ```
+
+  You can also use the `build.bat` and `run.bat` scripts (Windows) to generate a `result.ino` file and upload it to an Arduino board.
