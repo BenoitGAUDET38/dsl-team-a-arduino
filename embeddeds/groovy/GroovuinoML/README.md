@@ -90,4 +90,4 @@ export "Switch!"
 
   You can also use the `build.bat` and `run.bat <script name or path>` scripts (Windows) to generate a `results/result<script name>.ino` file and upload it to an Arduino board.
   
-A `run-all.bat` script is also available 
+A `run-all.bat` script is also available.

@@ -9,6 +9,7 @@ import io.github.mosser.arduinoml.kernel.structural.*;
  */
 public class ToWiring extends Visitor<StringBuffer> {
 	enum PASS {ONE, TWO}
+	enum COND_PASS {ONE, TWO, THREE, FOUR}
 
 
 	public ToWiring() {
@@ -67,7 +68,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("  pinMode(%d, OUTPUT); // %s [Actuator]\n", actuator.getPin(), actuator.getName()));
-			return;
 		}
 	}
 
@@ -81,7 +81,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("  pinMode(%d, INPUT);  // %s [Sensor]\n", sensor.getPin(), sensor.getName()));
-			return;
 		}
 	}
 
@@ -101,7 +100,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 				state.getTransition().accept(this);
 				w("\t\tbreak;\n");
 			}
-			return;
 		}
 
 	}
@@ -112,44 +110,54 @@ public class ToWiring extends Visitor<StringBuffer> {
 			return;
 		}
 		if(context.get("pass") == PASS.TWO) {
-//			String sensorName = transition.getSensor().getName();
-//			w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
-//					sensorName, sensorName));
-//			w(String.format("\t\t\tif( digitalRead(%d) == %s && %sBounceGuard) {\n",
-//					transition.getSensor().getPin(), transition.getValue(), sensorName));
-//			w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
-//			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
-//			w("\t\t\t}\n");
-//			return;
+			context.put("cond_pass", COND_PASS.ONE);
 			for (Condition condition: transition.getConditions()) {
-				String sensorName = condition.getSensor().getName();
-				w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
-					sensorName, sensorName));
+				condition.accept(this);
 			}
 			w(String.format("\t\t\tif ("));
+			context.put("cond_pass", COND_PASS.TWO);
 			for (Condition condition: transition.getConditions()) {
-				if(condition.getOperator() == OPERATOR.EMPTY) {
-					w(String.format("digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
-				}
-				else if (condition.getOperator() == OPERATOR.AND) {
-					w(String.format(" && digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
-				}
-				else if (condition.getOperator() == OPERATOR.OR) {
-					w(String.format(" || digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
-				}
+				condition.accept(this);
 			}
+			context.put("cond_pass", COND_PASS.THREE);
 			for (Condition condition: transition.getConditions()) {
-				String sensorName = condition.getSensor().getName();
-				w(String.format(" && %sBounceGuard", sensorName));
+				condition.accept(this);
 			}
 			w(String.format(") {\n"));
+			context.put("cond_pass", COND_PASS.FOUR);
 			for (Condition condition: transition.getConditions()) {
-				String sensorName = condition.getSensor().getName();
-				w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
+				condition.accept(this);
 			}
 			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
 			w("\t\t\t}\n");
-			return;
+        }
+	}
+
+	@Override
+	public void visit(Condition condition) {
+		if(context.get("cond_pass") == COND_PASS.ONE) {
+			String sensorName = condition.getSensor().getName();
+			w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
+					sensorName, sensorName));
+		}
+		if(context.get("cond_pass") == COND_PASS.TWO) {
+			if(condition.getOperator() == OPERATOR.EMPTY) {
+				w(String.format("digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+			}
+			else if (condition.getOperator() == OPERATOR.AND) {
+				w(String.format(" && digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+			}
+			else if (condition.getOperator() == OPERATOR.OR) {
+				w(String.format(" || digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+			}
+		}
+		if(context.get("cond_pass") == COND_PASS.THREE) {
+			String sensorName = condition.getSensor().getName();
+			w(String.format(" && %sBounceGuard", sensorName));
+		}
+		if(context.get("cond_pass") == COND_PASS.FOUR) {
+			String sensorName = condition.getSensor().getName();
+			w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
 		}
 	}
 
@@ -160,8 +168,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
-			return;
-		}
+        }
 	}
 
 }

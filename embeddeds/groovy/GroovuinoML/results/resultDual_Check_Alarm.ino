@@ -3,7 +3,7 @@
 
 long debounce = 200;
 
-enum STATE {on, off};
+enum STATE {on, off, button1_on, button2_on};
 STATE currentState = off;
 
 boolean button1BounceGuard = false;
@@ -38,6 +38,20 @@ void loop() {
 				button1LastDebounceTime = millis();
 				button2LastDebounceTime = millis();
 				currentState = on;
+			}
+		break;
+		case button1_on:
+			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
+			if (digitalRead(9) == LOW && button1BounceGuard) {
+				button1LastDebounceTime = millis();
+				currentState = off;
+			}
+		break;
+		case button2_on:
+			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
+			if (digitalRead(10) == LOW && button2BounceGuard) {
+				button2LastDebounceTime = millis();
+				currentState = off;
 			}
 		break;
 	}
