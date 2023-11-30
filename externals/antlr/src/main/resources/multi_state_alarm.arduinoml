@@ -1,0 +1,26 @@
+### Basic scenario
+## Multi-state alarm: Pushing the button starts the buzz noise.
+## Pushing it again stop the buzzer and switch the LED on.
+## Pushing it again switch the LED off, and makes the system ready to make noise again after one push, and so on.
+
+application multiStateAlarm
+
+sensor button: 9
+actuator led: 12
+actuator buzzer: 11
+
+on {
+    buzzer <= HIGH
+    button is HIGH => step
+}
+
+step {
+    buzzer <= LOW
+    led <= HIGH
+    button is HIGH => off
+}
+
+-> off {
+    led <= LOW
+    button is HIGH => on
+}
