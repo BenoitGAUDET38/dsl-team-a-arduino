@@ -39,4 +39,13 @@ public class Transition implements Visitable {
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
 	}
+
+	@Override
+	public String toString() {
+		return "Transition{" +
+				"next=" + next.getName() +
+				", sensor=" + sensor +
+				", value=" + value +
+				'}';
+	}
 }
