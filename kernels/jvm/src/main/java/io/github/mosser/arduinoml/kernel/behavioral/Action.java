@@ -31,4 +31,12 @@ public class Action implements Visitable {
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
 	}
+
+	@Override
+	public String toString() {
+		return "Action{" +
+				"value=" + value +
+				", actuator=" + actuator +
+				'}';
+	}
 }

@@ -20,18 +20,18 @@ This project is a quick and dirty implementation of the ArduinoML language using
 ## Syntax example
 
 ```Groovy
-sensor "button" pin 9
-actuator "led" pin 12
+sensor "button1" onPin 9
+actuator "led1" pin 12
 
-state "on" means led becomes high
-state "off" means led becomes low
+state "on" means "led1" becomes "high"
+state "off" means "led1" becomes "low"
 
-initial off
+initial "off"
 
-from on to off when button becomes high
-from off to on when button becomes high
+from "on" to "off" when "button1" becomes "high"
+from "off" to "on" when "button1" becomes "high"
 
-export "Switch!"
+export "State-based alarm"
 ```
 
 ## Another example
@@ -54,18 +54,18 @@ export "Switch!"
 
 ## An even better example with latest commit, to allow using "" to access values, making the syntax more homogeneous:
 ```Groovy
-sensor "button" pin 9
+sensor "button1" pin 9
 actuator "led1" pin 12
 actuator "led2" pin 13
 actuator "led3" pin 14
 
-state "on" means "led1" becomes "high" and "led3" becomes "high"
+state "on" means "led1" becomes "high"
 state "off" means "led1" becomes "low" and "led2" becomes "low" and "led3" becomes "low"
 
 initial "off"
 
-from "on" to "off" when "button" becomes "high"
-from "off" to "on" when "button" becomes "high"
+from "on" to "off" when "button1" becomes "high"
+from "off" to "on" when "button1" becomes "high"
 
 export "Switch!"
 ```
@@ -81,10 +81,11 @@ export "Switch!"
     ```bash
     cd ..\..\..\kernels\jvm\; mvn clean install; cd ..\..\embeddeds\groovy\GroovuinoML\
     ```
+  * Set the `src` folder as source Sources Root and unmark the `groovy` directory
   * Create a jar executable using `mvn clean compile assembly:single`
   * Then, to run the Switch script example:
     ```bash
     java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\Switch.groovy
     ```
 
-  You can also use the `build.bat` and `run.bat` scripts (Windows) to generate a `result.ino` file and upload it to an Arduino board.
+  You can also use the `build.bat` and `run.bat <script name>` scripts (Windows) to generate a `result<script name>.ino` file and upload it to an Arduino board.

@@ -53,4 +53,14 @@ public class App implements NamedElement, Visitable {
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
 	}
+
+	@Override
+	public String toString() {
+		return "App{" +
+				"\nname='" + name + '\'' +
+				"\nbricks=" + bricks +
+				"\nstates=" + states +
+				"\ninitial=" + initial +
+				"\n}";
+	}
 }
