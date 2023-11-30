@@ -40,7 +40,7 @@ public class Transition implements Visitable {
 	public String toString() {
 		return "Transition{" +
 				"next=" + next.getName() +
-				"conditions=" + conditions +
+				", conditions=" + conditions +
 				'}';
 	}
 }

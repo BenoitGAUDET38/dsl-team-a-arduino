@@ -1,5 +1,8 @@
 package main.groovy.groovuinoml.dsl
 
+import io.github.mosser.arduinoml.kernel.behavioral.Condition
+import io.github.mosser.arduinoml.kernel.behavioral.OPERATOR
+
 import java.util.List;
 
 import io.github.mosser.arduinoml.kernel.behavioral.Action
@@ -45,14 +48,46 @@ abstract class GroovuinoMLBasescript extends Script {
 	
 	// from state1 to state2 when sensor becomes signal
 	def from(state1) {
-		[to: { state2 -> 
+		List<Condition> conditions = new ArrayList<Condition>()
+
+		def andClosure
+		def orClosure
+		andClosure = { sensor ->
+			[becomes: { signal ->
+				Condition condition = new Condition()
+				condition.setOperator(OPERATOR.AND)
+				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
+				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
+				conditions.add(condition)
+				[and: andClosure, or: orClosure]
+			}]
+		}
+
+
+		orClosure = { sensor ->
+			[becomes: { signal ->
+				Condition condition = new Condition()
+				condition.setOperator(OPERATOR.OR)
+				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
+				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
+				conditions.add(condition)
+				[and: andClosure, or: orClosure]
+			}]
+		}
+
+		[to: { state2 ->
+			((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
+					state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1,
+					state2 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state2) : (State)state2,
+					conditions)
 			[when: { sensor ->
-				[becomes: { signal -> 
-					((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
-						state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1, 
-						state2 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state2) : (State)state2, 
-						sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor, 
-						signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
+				[becomes: { signal ->
+					Condition condition = new Condition()
+					condition.setOperator(OPERATOR.EMPTY)
+					condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
+					condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
+					conditions.add(condition)
+					[and: andClosure, or: orClosure]
 				}]
 			}]
 		}]
