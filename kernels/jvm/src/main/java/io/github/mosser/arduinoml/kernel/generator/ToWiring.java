@@ -112,12 +112,41 @@ public class ToWiring extends Visitor<StringBuffer> {
 			return;
 		}
 		if(context.get("pass") == PASS.TWO) {
-			String sensorName = transition.getSensor().getName();
-			w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
+//			String sensorName = transition.getSensor().getName();
+//			w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
+//					sensorName, sensorName));
+//			w(String.format("\t\t\tif( digitalRead(%d) == %s && %sBounceGuard) {\n",
+//					transition.getSensor().getPin(), transition.getValue(), sensorName));
+//			w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
+//			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
+//			w("\t\t\t}\n");
+//			return;
+			for (Condition condition: transition.getConditions()) {
+				String sensorName = condition.getSensor().getName();
+				w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
 					sensorName, sensorName));
-			w(String.format("\t\t\tif( digitalRead(%d) == %s && %sBounceGuard) {\n",
-					transition.getSensor().getPin(), transition.getValue(), sensorName));
-			w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
+			}
+			w(String.format("\t\t\tif ("));
+			for (Condition condition: transition.getConditions()) {
+				if(condition.getOperator() == OPERATOR.EMPTY) {
+					w(String.format("digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+				}
+				else if (condition.getOperator() == OPERATOR.AND) {
+					w(String.format(" && digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+				}
+				else if (condition.getOperator() == OPERATOR.OR) {
+					w(String.format(" || digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+				}
+			}
+			for (Condition condition: transition.getConditions()) {
+				String sensorName = condition.getSensor().getName();
+				w(String.format(" && %sBounceGuard", sensorName));
+			}
+			w(String.format(") {\n"));
+			for (Condition condition: transition.getConditions()) {
+				String sensorName = condition.getSensor().getName();
+				w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
+			}
 			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
 			w("\t\t\t}\n");
 			return;
