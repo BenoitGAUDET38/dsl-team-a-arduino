@@ -1,6 +1,6 @@
 sensor "button1" pin 9
-actuator "led1" pin 12
-actuator "buzzer1" pin 13
+actuator "led1" pin 11
+actuator "buzzer1" pin 12
 
 state "buzzer_on" means "buzzer1" becomes "high"
 state "led_on" means "buzzer1" becomes "low" and "led1" becomes "high"

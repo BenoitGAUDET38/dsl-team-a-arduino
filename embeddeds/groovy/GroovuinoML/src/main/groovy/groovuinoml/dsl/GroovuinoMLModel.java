@@ -57,7 +57,7 @@ public class GroovuinoMLModel {
 		Transition transition = new Transition();
 		transition.setNext(to);
 		transition.setConditions(conditions);
-		from.setTransition(transition);
+		from.addTransition(transition);
 	}
 	
 	public void setInitialState(State state) {
