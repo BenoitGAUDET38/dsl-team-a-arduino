@@ -28,6 +28,10 @@ public class Switch {
 		led.setName("LED");
 		led.setPin(12);
 
+		ActuatorLCD lcd = new ActuatorLCD();
+		lcd.setName("LCD");
+		lcd.setBus(1);
+
 		// Declaring states
 		State on = new State();
 		on.setName("on");
@@ -44,9 +48,20 @@ public class Switch {
 		switchTheLightOff.setActuator(led);
 		switchTheLightOff.setValue(SIGNAL.LOW);
 
+		ActionLCD displayText = new ActionLCD();
+		displayText.setDisplayText(true);
+		displayText.setActuatorLcd(lcd);
+
+		ActionLCD clearText = new ActionLCD();
+		displayText.setDisplayText(false);
+		displayText.setActuatorLcd(lcd);
+
 		// Binding actions to states
 		on.setActions(Arrays.asList(switchTheLightOn));
 		off.setActions(Arrays.asList(switchTheLightOff));
+
+		on.setActionLCDS(Arrays.asList(displayText));
+		off.setActionLCDS(Arrays.asList(clearText));
 
 		// Creating transitions
 		Transition on2off = new Transition();

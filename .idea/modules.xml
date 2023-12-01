@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/embeddeds/groovy/GroovuinoML/dsl-groovy.iml" filepath="$PROJECT_DIR$/embeddeds/groovy/GroovuinoML/dsl-groovy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dsl-team-a-arduino.iml" filepath="$PROJECT_DIR$/.idea/dsl-team-a-arduino.iml" />
     </modules>
   </component>
 </project>

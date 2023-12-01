@@ -71,6 +71,25 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 	}
 
+	@Override
+	public void visit(ActuatorLCD actuatorLcd) {
+		if(context.get("pass") == PASS.ONE) {
+			w("#include <LiquidCrystal.h>\n");
+			switch (actuatorLcd.getBus()) {
+				case 1:
+					w(String.format("LiquidCrystal lcd(2,3,4,5,6,7,8); // %s [LCD Actuator]\n", actuatorLcd.getName()));
+					break;
+				case 2:
+					w(String.format("LiquidCrystal lcd(10,11,12,13,14,15,16); // %s [LCD Actuator]\n", actuatorLcd.getName()));
+					break;
+				default:
+					break;
+			}
+		}
+		if(context.get("pass") == PASS.TWO) {
+			w(String.format("  lcd.begin(16,2); // %s [Actuator]\n", actuatorLcd.getName()));
+		}
+	}
 
 	@Override
 	public void visit(Sensor sensor) {
@@ -94,6 +113,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 			w("\t\tcase " + state.getName() + ":\n");
 			for (Action action : state.getActions()) {
 				action.accept(this);
+			}
+
+			for (ActionLCD actionLCD : state.getActionLCDS()) {
+				actionLCD.accept(this);
 			}
 
 			if (state.getTransitions() != null) {
@@ -171,6 +194,20 @@ public class ToWiring extends Visitor<StringBuffer> {
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
         }
+	}
+
+	@Override
+	public void visit(ActionLCD actionLcd) {
+		if(context.get("pass") == PASS.ONE) {
+			return;
+		}
+		if(context.get("pass") == PASS.TWO) {
+			if (actionLcd.isDisplayText()) {
+				w(String.format("\t\t\tlcd.print(\"Hello Mourad!\");\n"));
+			} else {
+				w("\t\t\tlcd.clear();\n");
+			}
+		}
 	}
 
 }
