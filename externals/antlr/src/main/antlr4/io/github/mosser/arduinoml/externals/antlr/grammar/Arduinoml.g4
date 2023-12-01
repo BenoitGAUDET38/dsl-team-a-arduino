@@ -17,7 +17,7 @@ bricks          :   (sensor|actuator)+;
 states          :   state+;
     state       :   initial? name=IDENTIFIER '{'  action+ transition '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
-    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL '=>' next=IDENTIFIER ;
+    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL ('op' operator=OPERATOR 'with' secondTrigger=IDENTIFIER 'is' secondValue=SIGNAL)*? '=>' next=IDENTIFIER ;
     initial     :   '->';
 
 /*****************
@@ -27,6 +27,7 @@ states          :   state+;
 PORT_NUMBER     :   [1-9] | '11' | '12';
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
 SIGNAL          :   'HIGH' | 'LOW';
+OPERATOR        :   'AND' | 'OR';
 
 /*************
  ** Helpers **
