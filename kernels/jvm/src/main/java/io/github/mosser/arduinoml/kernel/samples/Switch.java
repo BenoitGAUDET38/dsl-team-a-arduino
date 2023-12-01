@@ -74,8 +74,8 @@ public class Switch {
 		off2on.setConditions(Arrays.asList(cond3));
 
 		// Binding transitions to states
-		on.setTransition(on2off);
-		off.setTransition(off2on);
+		on.setTransitions(Arrays.asList(on2off));
+		off.setTransitions(Arrays.asList(off2on));
 
 		// Building the App
 		App theSwitch = new App();
