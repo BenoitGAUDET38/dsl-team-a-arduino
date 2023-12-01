@@ -11,15 +11,14 @@ long button1LastDebounceTime = 0;
 
 void setup(){
   pinMode(9, INPUT);  // button1 [Sensor]
-  pinMode(12, OUTPUT); // led1 [Actuator]
-  pinMode(13, OUTPUT); // led2 [Actuator]
-  pinMode(14, OUTPUT); // led3 [Actuator]
+  pinMode(11, OUTPUT); // led1 [Actuator]
+  pinMode(12, OUTPUT); // led2 [Actuator]
 }
 
 void loop() {
 	switch(currentState){
 		case on:
-			digitalWrite(12,HIGH);
+			digitalWrite(11,HIGH);
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
@@ -27,9 +26,8 @@ void loop() {
 			}
 		break;
 		case off:
+			digitalWrite(11,LOW);
 			digitalWrite(12,LOW);
-			digitalWrite(13,LOW);
-			digitalWrite(14,LOW);
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();

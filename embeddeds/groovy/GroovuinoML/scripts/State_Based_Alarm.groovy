@@ -1,5 +1,5 @@
 sensor "button1" onPin 9
-actuator "led1" pin 12
+actuator "led1" pin 11
 
 state "on" means "led1" becomes "high"
 state "off" means "led1" becomes "low"
