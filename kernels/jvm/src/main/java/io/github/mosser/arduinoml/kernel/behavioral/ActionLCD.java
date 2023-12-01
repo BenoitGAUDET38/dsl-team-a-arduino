@@ -11,6 +11,8 @@ public class ActionLCD implements Visitable {
 	private boolean displayText;
 	private ActuatorLCD actuatorLcd;
 
+	private String text;
+
 
 	public boolean isDisplayText() {
 		return displayText;
@@ -28,10 +30,19 @@ public class ActionLCD implements Visitable {
 		this.actuatorLcd = actuatorLcd;
 	}
 
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
 	}
+
 
 	@Override
 	public String toString() {

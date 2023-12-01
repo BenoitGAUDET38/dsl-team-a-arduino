@@ -203,7 +203,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			if (actionLcd.isDisplayText()) {
-				w(String.format("\t\t\tlcd.print(\"Hello Mourad!\");\n"));
+				w(String.format("\t\t\tlcd.setCursor(0,0);\n\t\t\tlcd.print(\"%s\");\n", actionLcd.getText()));
 			} else {
 				w("\t\t\tlcd.clear();\n");
 			}
