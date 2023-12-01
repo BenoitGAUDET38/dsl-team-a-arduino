@@ -4,14 +4,14 @@ import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 
 
 import io.github.mosser.arduinoml.kernel.App;
-import io.github.mosser.arduinoml.kernel.behavioral.Action;
-import io.github.mosser.arduinoml.kernel.behavioral.State;
-import io.github.mosser.arduinoml.kernel.behavioral.Transition;
+import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.structural.Actuator;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModelBuilder extends ArduinomlBaseListener {
@@ -41,9 +41,13 @@ public class ModelBuilder extends ArduinomlBaseListener {
         String to; // name of the next state, as its instance might not have been compiled yet
         Sensor trigger;
         SIGNAL value;
+        OPERATOR logic;
+        Binding more;
     }
 
     private State currentState = null;
+
+    private List<Condition> conditions = new ArrayList<>();
 
     /**************************
      ** Listening mechanisms **
@@ -59,8 +63,36 @@ public class ModelBuilder extends ArduinomlBaseListener {
         // Resolving states in transitions
         bindings.forEach((key, binding) ->  {
             Transition t = new Transition();
-            t.setSensor(binding.trigger);
-            t.setValue(binding.value);
+            Condition c = new Condition();
+            c.setSensor(binding.trigger);
+            c.setValue(binding.value);
+            System.out.println("OPERATOR: " + binding.logic);
+            if (binding.logic == null) {
+                c.setOperator(OPERATOR.EMPTY);
+            } else if (binding.logic == OPERATOR.AND) {
+                c.setOperator(OPERATOR.AND);
+            } else if (binding.logic == OPERATOR.OR) {
+                c.setOperator(OPERATOR.OR);
+            }
+            conditions.add(c);
+
+            Binding current = binding.more;
+            while (current != null) {
+                Condition c2 = new Condition();
+                c2.setSensor(current.trigger);
+                c2.setValue(current.value);
+                System.out.println("OPERATOR: " + current.logic);
+                if (current.logic == null) {
+                    c2.setOperator(OPERATOR.EMPTY);
+                } else if (current.logic == OPERATOR.AND) {
+                    c2.setOperator(OPERATOR.AND);
+                } else if (current.logic == OPERATOR.OR) {
+                    c2.setOperator(OPERATOR.OR);
+                }
+                conditions.add(c2);
+                current = current.more;
+            }
+            t.setConditions(conditions);
             t.setNext(states.get(binding.to));
             states.get(key).setTransition(t);
         });
@@ -119,7 +151,27 @@ public class ModelBuilder extends ArduinomlBaseListener {
         toBeResolvedLater.to      = ctx.next.getText();
         toBeResolvedLater.trigger = sensors.get(ctx.trigger.getText());
         toBeResolvedLater.value   = SIGNAL.valueOf(ctx.value.getText());
+        if (ctx.logic == null) {
+            toBeResolvedLater.logic = null;
+        } else {
+            toBeResolvedLater.logic   = OPERATOR.valueOf(ctx.logic == null ? null : ctx.logic.getText());
+        }
+        toBeResolvedLater.more = getMore(ctx.more);
         bindings.put(currentState.getName(), toBeResolvedLater);
+    }
+
+    public Binding getMore(ArduinomlParser.ConditionContext mctx) {
+        Binding newBinding = new Binding();
+        if (mctx == null) {
+            return null;
+        }
+        else {
+            newBinding.trigger = sensors.get(mctx.trigger.getText());
+            newBinding.value   = SIGNAL.valueOf(mctx.value.getText());
+            newBinding.logic   = OPERATOR.valueOf(mctx.logic.getText());
+            newBinding.more    = getMore(mctx.more);
+        }
+        return newBinding;
     }
 
     @Override
