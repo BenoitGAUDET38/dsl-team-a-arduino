@@ -17,7 +17,8 @@ bricks          :   (sensor|actuator)+;
 states          :   state+;
     state       :   initial? name=IDENTIFIER '{'  action+ transition '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
-    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL ('op' operator=OPERATOR 'with' secondTrigger=IDENTIFIER 'is' secondValue=SIGNAL)*? '=>' next=IDENTIFIER ;
+    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)? '=>' next=IDENTIFIER ;
+    condition   :   operator=OPERATOR trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?;
     initial     :   '->';
 
 /*****************

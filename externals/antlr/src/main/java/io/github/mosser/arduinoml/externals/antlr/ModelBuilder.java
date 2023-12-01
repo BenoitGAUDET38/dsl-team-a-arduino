@@ -118,18 +118,24 @@ public class ModelBuilder extends ArduinomlBaseListener {
         List<Condition> conditions= new ArrayList<>();
         toBeResolvedLater.to      = ctx.next.getText();
         toBeResolvedLater.conditions=conditions;
+
         Condition condition= new Condition();
         condition.setOperator(OPERATOR.EMPTY);
         condition.setSensor(sensors.get(ctx.trigger.getText()));
         condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
         conditions.add(condition);
 
-        if (ctx.operator!=null){
-            Condition condition2= new Condition();
-            condition2.setOperator(OPERATOR.valueOf(ctx.operator.getText()));
-            condition2.setValue(SIGNAL.valueOf(ctx.secondValue.getText()));
-            condition2.setSensor(sensors.get(ctx.secondTrigger.getText()));
-            conditions.add(condition2);
+
+        ArduinomlParser.ConditionContext conditionContext= ctx.more;
+
+
+        while(conditionContext!=null){
+            condition= new Condition();
+            condition.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
+            condition.setSensor(sensors.get(conditionContext.trigger.getText()));
+            condition.setValue(SIGNAL.valueOf(conditionContext.value.getText()));
+            conditions.add(condition);
+            conditionContext=conditionContext.more;
         }
 
         bindings.put(currentState.getName(), toBeResolvedLater);
