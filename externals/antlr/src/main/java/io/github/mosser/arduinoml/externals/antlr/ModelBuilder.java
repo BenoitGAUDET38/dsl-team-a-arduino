@@ -128,7 +128,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterActionLCD(ArduinomlParser.ActionLCDContext ctx) {
         ActionLCD actionLCD = new ActionLCD();
-        actionLCD.setActuatorLcd(actuatorLCD);
+        actionLCD.setActuatorLCD(actuatorLCD);
         actionLCD.setDisplayText(ctx.isDisplayed.getText().equals("TRUE"));
         if (ctx.isDisplayed.getText().equals("TRUE")){
             actionLCD.setText(ctx.text.getText());
