@@ -46,12 +46,14 @@ abstract class GroovuinoMLBasescript extends Script {
 		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().setInitialState(state instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state) : (State)state)
 	}
 	
-	// from state1 to state2 when sensor becomes signal
+	// from state1 to state2 when sensor becomes signal [and/or sensor becomes signal [with actuator becomes signal [and actuator becomes signal]]]
 	def from(state1) {
 		List<Condition> conditions = new ArrayList<Condition>()
+		List<Action> actions = new ArrayList<Action>()
 
 		def andClosure
 		def orClosure
+		def withClosure
 		andClosure = { sensor ->
 			[becomes: { signal ->
 				Condition condition = new Condition()
@@ -59,7 +61,7 @@ abstract class GroovuinoMLBasescript extends Script {
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				conditions.add(condition)
-				[and: andClosure, or: orClosure]
+				[and: andClosure, or: orClosure, with: withClosure]
 			}]
 		}
 
@@ -71,7 +73,17 @@ abstract class GroovuinoMLBasescript extends Script {
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				conditions.add(condition)
-				[and: andClosure, or: orClosure]
+				[and: andClosure, or: orClosure, with: withClosure]
+			}]
+		}
+
+		withClosure = { actuator ->
+			[becomes: { signal ->
+				Action action = new Action()
+				action.setActuator(actuator instanceof String ? (Actuator) ((GroovuinoMLBinding) this.getBinding()).getVariable(actuator) : (Actuator) actuator)
+				action.setValue(signal instanceof String ? (SIGNAL) ((GroovuinoMLBinding) this.getBinding()).getVariable(signal) : (SIGNAL) signal)
+				actions.add(action)
+				[and: withClosure]
 			}]
 		}
 
@@ -79,7 +91,7 @@ abstract class GroovuinoMLBasescript extends Script {
 			((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
 					state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1,
 					state2 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state2) : (State)state2,
-					conditions)
+					conditions, actions)
 			[when: { sensor ->
 				[becomes: { signal ->
 					Condition condition = new Condition()
@@ -87,7 +99,7 @@ abstract class GroovuinoMLBasescript extends Script {
 					condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 					condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 					conditions.add(condition)
-					[and: andClosure, or: orClosure]
+					[and: andClosure, or: orClosure, with: withClosure]
 				}]
 			}]
 		}]
