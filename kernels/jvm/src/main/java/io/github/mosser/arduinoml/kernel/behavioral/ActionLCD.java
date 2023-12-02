@@ -2,14 +2,12 @@ package io.github.mosser.arduinoml.kernel.behavioral;
 
 import io.github.mosser.arduinoml.kernel.generator.Visitable;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
-import io.github.mosser.arduinoml.kernel.structural.Actuator;
 import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD;
-import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 
 public class ActionLCD implements Visitable {
 
 	private boolean displayText;
-	private ActuatorLCD actuatorLcd;
+	private ActuatorLCD actuatorLCD;
 
 	private String text;
 
@@ -22,12 +20,12 @@ public class ActionLCD implements Visitable {
 		this.displayText = displayText;
 	}
 
-	public ActuatorLCD getActuatorLcd() {
-		return actuatorLcd;
+	public ActuatorLCD getActuatorLCD() {
+		return actuatorLCD;
 	}
 
-	public void setActuatorLcd(ActuatorLCD actuatorLcd) {
-		this.actuatorLcd = actuatorLcd;
+	public void setActuatorLCD(ActuatorLCD actuatorLCD) {
+		this.actuatorLCD = actuatorLCD;
 	}
 
 	public String getText() {
@@ -48,7 +46,7 @@ public class ActionLCD implements Visitable {
 	public String toString() {
 		return "Action{" +
 				"displayText=" + displayText +
-				", actuator=" + actuatorLcd +
+				", actuator=" + actuatorLCD +
 				'}';
 	}
 }

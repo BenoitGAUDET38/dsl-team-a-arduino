@@ -72,22 +72,22 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
-	public void visit(ActuatorLCD actuatorLcd) {
+	public void visit(ActuatorLCD actuatorLCD) {
 		if(context.get("pass") == PASS.ONE) {
 			w("#include <LiquidCrystal.h>\n");
-			switch (actuatorLcd.getBus()) {
+			switch (actuatorLCD.getBus()) {
 				case 1:
-					w(String.format("LiquidCrystal lcd(2,3,4,5,6,7,8); // %s [LCD Actuator]\n", actuatorLcd.getName()));
+					w(String.format("LiquidCrystal lcd(2,3,4,5,6,7,8); // %s [LCD Actuator]\n", actuatorLCD.getName()));
 					break;
 				case 2:
-					w(String.format("LiquidCrystal lcd(10,11,12,13,14,15,16); // %s [LCD Actuator]\n", actuatorLcd.getName()));
+					w(String.format("LiquidCrystal lcd(10,11,12,13,14,15,16); // %s [LCD Actuator]\n", actuatorLCD.getName()));
 					break;
 				default:
 					break;
 			}
 		}
 		if(context.get("pass") == PASS.TWO) {
-			w(String.format("  lcd.begin(16,2); // %s [Actuator]\n", actuatorLcd.getName()));
+			w(String.format("  lcd.begin(16,2); // %s [Actuator]\n", actuatorLCD.getName()));
 		}
 	}
 
