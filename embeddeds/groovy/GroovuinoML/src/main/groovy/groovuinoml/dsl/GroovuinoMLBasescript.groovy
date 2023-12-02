@@ -68,7 +68,7 @@ abstract class GroovuinoMLBasescript extends Script {
 			}
 			]
 		}
-		[means: closureLCD]
+		[means: closureLCD, means: closure]
 	}
 	
 	// initial state
