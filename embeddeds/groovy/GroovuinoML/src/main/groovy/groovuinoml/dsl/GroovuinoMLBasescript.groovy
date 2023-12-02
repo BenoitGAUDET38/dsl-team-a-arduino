@@ -46,7 +46,6 @@ abstract class GroovuinoMLBasescript extends Script {
 				[and: closure]
 			}]
 		}
-		[means: closure]
 
 		def closureLCD
 		closureLCD = { actuatorLCD ->
@@ -68,7 +67,7 @@ abstract class GroovuinoMLBasescript extends Script {
 			}
 			]
 		}
-		[means: closureLCD]
+		[means: closure, meansLCD: closureLCD]
 	}
 	
 	// initial state
