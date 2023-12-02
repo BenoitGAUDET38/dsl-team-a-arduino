@@ -11,6 +11,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 	enum PASS {ONE, TWO, THREE}
 	enum COND_PASS {ONE, TWO, THREE, FOUR}
 
+	boolean withLCD = false;
+
 
 	public ToWiring() {
 		this.result = new StringBuffer();
@@ -40,9 +42,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 			w("STATE currentState = " + app.getInitial().getName()+";\n");
 		}
 
+
 		for(Brick brick: app.getBricks()){
 			brick.accept(this);
 		}
+		withLCD=app.getBricks().stream().anyMatch(brick -> brick instanceof ActuatorLCD);
 
 		//second pass, setup and loop
 		context.put("pass",PASS.TWO);
@@ -71,6 +75,25 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 	}
 
+	@Override
+	public void visit(ActuatorLCD actuatorLCD) {
+		if(context.get("pass") == PASS.ONE) {
+			w("#include <LiquidCrystal.h>\n");
+			switch (actuatorLCD.getBus()) {
+				case 1:
+					w(String.format("LiquidCrystal lcd(2,3,4,5,6,7,8); // %s [LCD Actuator]\n", actuatorLCD.getName()));
+					break;
+				case 2:
+					w(String.format("LiquidCrystal lcd(10,11,12,13,14,15,16); // %s [LCD Actuator]\n", actuatorLCD.getName()));
+					break;
+				default:
+					break;
+			}
+		}
+		if(context.get("pass") == PASS.TWO) {
+			w(String.format("  lcd.begin(16,2); // %s [Actuator]\n", actuatorLCD.getName()));
+		}
+	}
 
 	@Override
 	public void visit(Sensor sensor) {
@@ -94,6 +117,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 			w("\t\tcase " + state.getName() + ":\n");
 			for (Action action : state.getActions()) {
 				action.accept(this);
+			}
+
+			for (ActionLCD actionLCD : state.getActionLCDS()) {
+				actionLCD.accept(this);
 			}
 
 			if (state.getTransitions() != null) {
@@ -136,6 +163,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 			}
 			context.put("pass", PASS.TWO);
 			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
+			if (withLCD) {
+				w("\t\t\t\tlcd.clear();\n");
+			}
 			w("\t\t\t}\n");
         }
 	}
@@ -178,6 +208,20 @@ public class ToWiring extends Visitor<StringBuffer> {
         }
 		if (context.get("pass") == PASS.THREE) {
 			w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
+		}
+	}
+
+	@Override
+	public void visit(ActionLCD actionLcd) {
+		if(context.get("pass") == PASS.ONE) {
+			return;
+		}
+		if(context.get("pass") == PASS.TWO) {
+			if (actionLcd.isDisplayText()) {
+				w(String.format("\t\t\tlcd.setCursor(0,%d);\n\t\t\tlcd.print(\"%s\");\n", actionLcd.getRowNumber(),actionLcd.getText()));
+			} else {
+				w("\t\t\tlcd.clear();\n");
+			}
 		}
 	}
 

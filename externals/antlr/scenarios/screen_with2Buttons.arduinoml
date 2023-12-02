@@ -1,0 +1,50 @@
+### Basic scenario
+## State-based alarm: Pushing the button once switches the screen on with a Hello World message.
+## Pushing it again switches it off.
+
+application screenHelloWorld
+
+# Declaring bricks
+sensor buttonLed: 9
+sensor buttonBuz: 10
+actuatorLCD lcd: 1
+actuator buzzer: 11
+actuator led: 12
+
+# Declaring states
+
+buzzerON {
+    buzzer <= HIGH
+    led <= LOW
+    lcd : BuzzerOn <= TRUE
+    lcd : LedOff row 2 <= TRUE
+    buttonLed is HIGH => bothON
+    buttonBuz is HIGH => off
+}
+
+ledON {
+    buzzer <= LOW
+    led <= HIGH
+    lcd : BuzzerOff <= TRUE
+    lcd : LedOn row 1 <= TRUE
+    buttonLed is HIGH => off
+    buttonBuz is HIGH => bothON
+}
+
+bothON {
+    buzzer <= HIGH
+    led <= HIGH
+    lcd : BuzzerOn <= TRUE
+    lcd : LedOn row 1 <= TRUE
+    buttonLed is HIGH =>  buzzerON
+    buttonBuz is HIGH =>  ledON
+}
+
+-> off {
+    led <= LOW
+    buzzer <= LOW
+    lcd : BuzzerOff <= TRUE
+    lcd : LedOff row 1 <= TRUE
+    buttonLed is HIGH =>  ledON
+    buttonBuz is HIGH =>  buzzerON
+}

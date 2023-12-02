@@ -16,6 +16,14 @@ public abstract class Brick implements NamedElement, Visitable {
 		this.pin = pin;
 	}
 
+	public int getBus() {
+		return pin;
+	}
+
+	public void setBus(int pin) {
+		this.pin = pin;
+	}
+
 	@Override
 	public String getName() {
 		return name;
