@@ -1,7 +1,9 @@
 package main.groovy.groovuinoml.dsl
 
+import io.github.mosser.arduinoml.kernel.behavioral.ActionLCD
 import io.github.mosser.arduinoml.kernel.behavioral.Condition
 import io.github.mosser.arduinoml.kernel.behavioral.OPERATOR
+import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD
 
 import java.util.List;
 
@@ -22,11 +24,17 @@ abstract class GroovuinoMLBasescript extends Script {
 	def actuator(String name) {
 		[pin: { n -> ((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createActuator(name, n) }]
 	}
+
+	// actuatorLCD "name" bus n
+	def actuatorLCD(String name) {
+		[bus: { n -> ((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createActuatorLCD(name, n) }]
+	}
 	
 	// state "name" means actuator becomes signal [and actuator becomes signal]*n
 	def state(String name) {
 		List<Action> actions = new ArrayList<Action>()
-		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions)
+		List<ActionLCD> actionLCDS = new ArrayList<ActionLCD>()
+		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions, actionLCDS)
 		// recursive closure to allow multiple and statements
 		def closure
 		closure = { actuator -> 
@@ -39,6 +47,28 @@ abstract class GroovuinoMLBasescript extends Script {
 			}]
 		}
 		[means: closure]
+
+		def closureLCD
+		closureLCD = { actuatorLCD ->
+			[display: { text ->
+				ActionLCD actionLCD = new ActionLCD()
+				actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
+				actionLCD.setDisplayText(true)
+				actionLCD.setText(text)
+				actionLCDS.add(actionLCD)
+				[and: closureLCD]
+			},
+			hide: { text ->
+				ActionLCD actionLCD = new ActionLCD()
+				actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
+				actionLCD.setDisplayText(false)
+				actionLCD.setText("")
+				actionLCDS.add(actionLCD)
+				[and: closureLCD]
+			}
+			]
+		}
+		[means: closureLCD]
 	}
 	
 	// initial state

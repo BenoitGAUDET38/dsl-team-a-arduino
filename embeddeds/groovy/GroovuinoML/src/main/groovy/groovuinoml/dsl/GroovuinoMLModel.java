@@ -4,10 +4,7 @@ import java.util.*;
 
 import groovy.lang.Binding;
 import io.github.mosser.arduinoml.kernel.App;
-import io.github.mosser.arduinoml.kernel.behavioral.Action;
-import io.github.mosser.arduinoml.kernel.behavioral.Condition;
-import io.github.mosser.arduinoml.kernel.behavioral.State;
-import io.github.mosser.arduinoml.kernel.behavioral.Transition;
+import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.generator.ToWiring;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.*;
@@ -41,11 +38,20 @@ public class GroovuinoMLModel {
 		this.bricks.add(actuator);
 		this.binding.setVariable(name, actuator);
 	}
+
+	public void createActuatorLCD(String name, Integer busNumber) {
+		ActuatorLCD actuatorLCD = new ActuatorLCD();
+		actuatorLCD.setName(name);
+		actuatorLCD.setBus(busNumber);
+		this.bricks.add(actuatorLCD);
+		this.binding.setVariable(name, actuatorLCD);
+	}
 	
-	public void createState(String name, List<Action> actions) {
+	public void createState(String name, List<Action> actions, List<ActionLCD> actionLCDS) {
 		State state = new State();
 		state.setName(name);
 		state.setActions(actions);
+		state.setActionLCDS(actionLCDS);
 		this.states.add(state);
 		this.binding.setVariable(name, state);
 	}

@@ -6,7 +6,6 @@ import io.github.mosser.arduinoml.kernel.generator.ToWiring;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Switch {
@@ -49,11 +48,11 @@ public class Switch {
 
 		ActionLCD displayText = new ActionLCD();
 		displayText.setDisplayText(true);
-		displayText.setActuatorLcd(lcd);
+		displayText.setActuatorLCD(lcd);
 
 		ActionLCD clearText = new ActionLCD();
 		displayText.setDisplayText(false);
-		displayText.setActuatorLcd(lcd);
+		displayText.setActuatorLCD(lcd);
 
 		// Binding actions to states
 		on.setActions(Arrays.asList(switchTheLightOn));
@@ -140,11 +139,11 @@ public class Switch {
 
 		ActionLCD displayText = new ActionLCD();
 		displayText.setDisplayText(true);
-		displayText.setActuatorLcd(lcd);
+		displayText.setActuatorLCD(lcd);
 
 		ActionLCD clearText = new ActionLCD();
 		clearText.setDisplayText(false);
-		clearText.setActuatorLcd(lcd);
+		clearText.setActuatorLCD(lcd);
 
 		// Binding actions to states
 		on.setActions(Arrays.asList(switchTheLightOn));
