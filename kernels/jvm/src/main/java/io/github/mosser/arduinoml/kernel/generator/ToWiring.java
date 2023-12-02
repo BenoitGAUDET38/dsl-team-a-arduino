@@ -8,7 +8,7 @@ import io.github.mosser.arduinoml.kernel.structural.*;
  * Quick and dirty visitor to support the generation of Wiring code
  */
 public class ToWiring extends Visitor<StringBuffer> {
-	enum PASS {ONE, TWO}
+	enum PASS {ONE, TWO, THREE}
 	enum COND_PASS {ONE, TWO, THREE, FOUR}
 
 
@@ -130,6 +130,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 			for (Condition condition: transition.getConditions()) {
 				condition.accept(this);
 			}
+			context.put("pass", PASS.THREE);
+			for (Action action : transition.getActions()) {
+				action.accept(this);
+			}
+			context.put("pass", PASS.TWO);
 			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
 			w("\t\t\t}\n");
         }
@@ -171,6 +176,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
         }
+		if (context.get("pass") == PASS.THREE) {
+			w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
+		}
 	}
 
 }

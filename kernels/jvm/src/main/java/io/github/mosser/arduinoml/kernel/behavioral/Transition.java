@@ -4,6 +4,7 @@ import io.github.mosser.arduinoml.kernel.generator.Visitable;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Transition implements Visitable {
@@ -11,7 +12,9 @@ public class Transition implements Visitable {
 	private State next;
 
 
-	private List<Condition> conditions;
+	private List<Condition> conditions = new ArrayList<>();
+
+	private List<Action> actions = new ArrayList<>();
 
 
 	public State getNext() {
@@ -30,6 +33,14 @@ public class Transition implements Visitable {
 		this.conditions = conditions;
 	}
 
+	public List<Action> getActions() {
+		return actions;
+	}
+
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
+	}
+
 
 	@Override
 	public void accept(Visitor visitor) {
@@ -41,6 +52,7 @@ public class Transition implements Visitable {
 		return "Transition{" +
 				"next=" + next.getName() +
 				", conditions=" + conditions +
+				", actions=" + actions +
 				'}';
 	}
 }
