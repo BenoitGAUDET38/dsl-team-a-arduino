@@ -11,6 +11,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 	enum PASS {ONE, TWO}
 	enum COND_PASS {ONE, TWO, THREE, FOUR}
 
+	boolean withLCD = false;
+
 
 	public ToWiring() {
 		this.result = new StringBuffer();
@@ -40,9 +42,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 			w("STATE currentState = " + app.getInitial().getName()+";\n");
 		}
 
+
 		for(Brick brick: app.getBricks()){
 			brick.accept(this);
 		}
+		withLCD=app.getBricks().stream().anyMatch(brick -> brick instanceof ActuatorLCD);
 
 		//second pass, setup and loop
 		context.put("pass",PASS.TWO);
@@ -154,6 +158,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 				condition.accept(this);
 			}
 			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
+			if (withLCD) {
+				w("\t\t\t\tlcd.clear();\n");
+			}
 			w("\t\t\t}\n");
         }
 	}
@@ -203,7 +210,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			if (actionLcd.isDisplayText()) {
-				w(String.format("\t\t\tlcd.setCursor(0,0);\n\t\t\tlcd.print(\"%s\");\n", actionLcd.getText()));
+				w(String.format("\t\t\tlcd.setCursor(0,%d);\n\t\t\tlcd.print(\"%s\");\n", actionLcd.getRowNumber(),actionLcd.getText()));
 			} else {
 				w("\t\t\tlcd.clear();\n");
 			}

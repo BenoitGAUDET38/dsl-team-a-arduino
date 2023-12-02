@@ -6,6 +6,7 @@ import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.structural.Actuator;
+import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
 import org.antlr.v4.runtime.atn.SemanticContext;
@@ -35,8 +36,9 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     private Map<String, Sensor>   sensors   = new HashMap<>();
     private Map<String, Actuator> actuators = new HashMap<>();
+    private ActuatorLCD actuatorLCD;
     private Map<String, State>    states  = new HashMap<>();
-    private Map<String, Binding>  bindings  = new HashMap<>();
+    private Map<String, List<Binding>>  bindings  = new HashMap<>();
 
     private class Binding { // used to support state resolution for transitions
         String to;
@@ -57,14 +59,17 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override public void exitRoot(ArduinomlParser.RootContext ctx) {
         // Resolving states in transitions
-        bindings.forEach((key, binding) ->  {
-            Transition t = new Transition();
-            t.setNext(states.get(binding.to));
-            t.setConditions(binding.conditions);
-            states.get(key).setTransition(t);
+        bindings.forEach((key, bindings) ->  {
+            for (Binding binding : bindings){
+                Transition t = new Transition();
+                t.setNext(states.get(binding.to));
+                t.setConditions(binding.conditions);
+                states.get(key).addTransition(t);
+            }
         });
         this.built = true;
     }
+
 
     @Override
     public void enterDeclaration(ArduinomlParser.DeclarationContext ctx) {
@@ -80,6 +85,8 @@ public class ModelBuilder extends ArduinomlBaseListener {
         sensors.put(sensor.getName(), sensor);
     }
 
+
+
     @Override
     public void enterActuator(ArduinomlParser.ActuatorContext ctx) {
         Actuator actuator = new Actuator();
@@ -88,6 +95,14 @@ public class ModelBuilder extends ArduinomlBaseListener {
         this.theApp.getBricks().add(actuator);
         actuators.put(actuator.getName(), actuator);
     }
+    @Override
+    public void enterActuatorLCD(ArduinomlParser.ActuatorLCDContext ctx) {
+        this.actuatorLCD = new ActuatorLCD();
+        actuatorLCD.setName(ctx.location().id.getText());
+        actuatorLCD.setBus(Integer.parseInt(ctx.location().port.getText()));
+        this.theApp.getBricks().add(actuatorLCD);
+    }
+
 
     @Override
     public void enterState(ArduinomlParser.StateContext ctx) {
@@ -109,6 +124,18 @@ public class ModelBuilder extends ArduinomlBaseListener {
         action.setActuator(actuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
         currentState.getActions().add(action);
+    }
+    @Override
+    public void enterActionLCD(ArduinomlParser.ActionLCDContext ctx) {
+        ActionLCD actionLCD = new ActionLCD();
+        actionLCD.setActuatorLcd(actuatorLCD);
+        actionLCD.setDisplayText(ctx.isDisplayed.getText().equals("TRUE"));
+        if (ctx.isDisplayed.getText().equals("TRUE")){
+            actionLCD.setText(ctx.text.getText());
+            if (ctx.rowNumber!=null)
+                actionLCD.setRowNumber(Integer.parseInt(ctx.rowNumber.getText()));
+        }
+        currentState.getActionLCDS().add(actionLCD);
     }
 
     @Override
@@ -137,8 +164,8 @@ public class ModelBuilder extends ArduinomlBaseListener {
             conditions.add(condition);
             conditionContext=conditionContext.more;
         }
-
-        bindings.put(currentState.getName(), toBeResolvedLater);
+        bindings.computeIfAbsent(currentState.getName(), k -> new ArrayList<>());
+        bindings.get(currentState.getName()).add(toBeResolvedLater);
     }
 
     @Override

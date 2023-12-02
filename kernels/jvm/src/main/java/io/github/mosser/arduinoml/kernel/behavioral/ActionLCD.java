@@ -10,7 +10,7 @@ public class ActionLCD implements Visitable {
 
 	private boolean displayText;
 	private ActuatorLCD actuatorLcd;
-
+	private int rowNumber=0;
 	private String text;
 
 
@@ -36,6 +36,14 @@ public class ActionLCD implements Visitable {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public int getRowNumber() {
+		return rowNumber;
+	}
+
+	public void setRowNumber(int rowNumber) {
+		this.rowNumber = rowNumber;
 	}
 
 	@Override
