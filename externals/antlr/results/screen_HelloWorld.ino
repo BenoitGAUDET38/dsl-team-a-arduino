@@ -11,6 +11,8 @@ long buttonLastDebounceTime = 0;
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2,3,4,5,6,7,8); // lcd [LCD Actuator]
 
+long timerSinceNewState = millis();
+
 void setup(){
   pinMode(9, INPUT);  // button [Sensor]
   lcd.begin(16,2); // lcd [Actuator]
@@ -30,6 +32,7 @@ void loop() {
 			buttonBounceGuard = millis() - buttonLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonBounceGuard) {
 				buttonLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = step;
 				lcd.clear();
 			}
@@ -44,6 +47,7 @@ void loop() {
 			buttonBounceGuard = millis() - buttonLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonBounceGuard) {
 				buttonLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = off;
 				lcd.clear();
 			}
@@ -55,9 +59,11 @@ void loop() {
 			buttonBounceGuard = millis() - buttonLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonBounceGuard) {
 				buttonLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = on;
 				lcd.clear();
 			}
 		break;
 	}
 }
+current state: State{name='step', actions=[Action{value=LOW, actuator=Brick{name='buzzer', pin=11}}, Action{value=HIGH, actuator=Brick{name='led', pin=12}}], actionLCDS=[Action{displayText=true, actuator=Brick{name='lcd', pin=1}}, Action{displayText=true, actuator=Brick{name='lcd', pin=1}}], transitions=[Transition{next=off, conditions=[Condition{sensor=Brick{name='button', pin=9}, value=HIGH, operator=EMPTY}], actions=[]}]}

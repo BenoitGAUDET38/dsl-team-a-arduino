@@ -1,0 +1,27 @@
+### More scenario
+## Mealy Machine - Acceptance scenario:
+## State machine with an error state, to which two transitions can lead.
+## The first transition has actions that switch LED1 on and LED2 off.
+## The second transition switches LED1 off and LED2 on.
+
+application mealy
+
+# Declaring bricks
+sensor buttonOne: 8
+sensor buttonTwo: 9
+actuator ledOne: 11
+actuator ledTwo: 12
+
+# Declaring states
+
+error {
+
+}
+
+-> on {
+    ledOne <= LOW
+    ledTwo <= LOW
+
+    buttonOne is HIGH (ledOne <= HIGH) => error
+    buttonTwo is HIGH (ledTwo <= HIGH) => error
+}
