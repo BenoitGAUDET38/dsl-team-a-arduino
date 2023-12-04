@@ -12,6 +12,8 @@ long button1LastDebounceTime = 0;
 boolean button2BounceGuard = false;
 long button2LastDebounceTime = 0;
 
+long timerSinceNewState = millis();
+
 void setup(){
   pinMode(9, INPUT);  // button1 [Sensor]
   pinMode(10, INPUT);  // button2 [Sensor]
@@ -27,6 +29,7 @@ void loop() {
 			if (digitalRead(9) == LOW || digitalRead(10) == LOW && button1BounceGuard && button2BounceGuard) {
 				button1LastDebounceTime = millis();
 				button2LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = off;
 			}
 		break;
@@ -37,6 +40,7 @@ void loop() {
 			if (digitalRead(9) == HIGH && digitalRead(10) == HIGH && button1BounceGuard && button2BounceGuard) {
 				button1LastDebounceTime = millis();
 				button2LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = on;
 			}
 		break;

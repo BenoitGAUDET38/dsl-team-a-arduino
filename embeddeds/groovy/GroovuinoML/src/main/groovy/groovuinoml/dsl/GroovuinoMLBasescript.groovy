@@ -2,6 +2,8 @@ package main.groovy.groovuinoml.dsl
 
 import io.github.mosser.arduinoml.kernel.behavioral.ActionLCD
 import io.github.mosser.arduinoml.kernel.behavioral.Condition
+import io.github.mosser.arduinoml.kernel.behavioral.ConditionDelay
+import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.OPERATOR
 import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD
 
@@ -87,26 +89,28 @@ abstract class GroovuinoMLBasescript extends Script {
 		def andClosure
 		def orClosure
 		def withClosure
+		def afterClosure
+
 		andClosure = { sensor ->
 			[becomes: { signal ->
-				Condition condition = new Condition()
+				Condition condition = new ConditionSensor()
 				condition.setOperator(OPERATOR.AND)
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				conditions.add(condition)
-				[and: andClosure, or: orClosure, with: withClosure]
+				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 			}]
 		}
 
 
 		orClosure = { sensor ->
 			[becomes: { signal ->
-				Condition condition = new Condition()
+				Condition condition = new ConditionSensor()
 				condition.setOperator(OPERATOR.OR)
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				conditions.add(condition)
-				[and: andClosure, or: orClosure, with: withClosure]
+				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 			}]
 		}
 
@@ -120,6 +124,14 @@ abstract class GroovuinoMLBasescript extends Script {
 			}]
 		}
 
+		afterClosure = { time ->
+			Condition condition = new ConditionDelay()
+			condition.setOperator(OPERATOR.AND)
+			condition.setDelay((int) time.amount * time.unit.multiplier)
+			conditions.add(condition)
+			[and: andClosure, or: orClosure, with: withClosure]
+		}
+
 		[to: { state2 ->
 			((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
 					state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1,
@@ -127,13 +139,19 @@ abstract class GroovuinoMLBasescript extends Script {
 					conditions, actions)
 			[when: { sensor ->
 				[becomes: { signal ->
-					Condition condition = new Condition()
+					Condition condition = new ConditionSensor();
 					condition.setOperator(OPERATOR.EMPTY)
 					condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 					condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 					conditions.add(condition)
-					[and: andClosure, or: orClosure, with: withClosure]
+					[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 				}]
+			}, after: { time ->
+				Condition condition = new ConditionDelay()
+				condition.setOperator(OPERATOR.EMPTY)
+				condition.setDelay((int) time.amount * time.unit.multiplier)
+				conditions.add(condition)
+				[with: withClosure]
 			}]
 		}]
 	}
