@@ -187,14 +187,9 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
         Transition transition = new Transition();
         State state = states.get(toBeResolvedLater.to);
-        System.out.println("all states: "+states);
-
-        System.out.println("all states length: "+states.size());
         transition.setNext(state);
         transition.setConditions(conditions);
         transition.setActions(actions);
-        System.out.println("sate: "+state);
-        System.out.println("transition: "+transition);
         currentState.getTransitions().add(transition);
     }
 
