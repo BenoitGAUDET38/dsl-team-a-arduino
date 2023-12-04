@@ -14,6 +14,12 @@ public class Action implements Visitable {
 	public SIGNAL getValue() {
 		return value;
 	}
+	public SIGNAL getOppositeValue(){
+		if(value == SIGNAL.HIGH){
+			return SIGNAL.LOW;
+		}
+		return SIGNAL.HIGH;
+	}
 
 	public void setValue(SIGNAL value) {
 		this.value = value;
