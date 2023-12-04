@@ -48,6 +48,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		withLCD=app.getBricks().stream().anyMatch(brick -> brick instanceof ActuatorLCD);
 
+		//time since last state change
+		w("\nlong timerSinceNewState = millis();\n");
+
 		//second pass, setup and loop
 		context.put("pass",PASS.TWO);
 		w("\nvoid setup(){\n");
@@ -162,6 +165,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				action.accept(this);
 			}
 			context.put("pass", PASS.TWO);
+			w("\t\t\t\ttimerSinceNewState = millis();\n");
 			w("\t\t\t\tcurrentState = " + transition.getNext().getName() + ";\n");
 			if (withLCD) {
 				w("\t\t\t\tlcd.clear();\n");
