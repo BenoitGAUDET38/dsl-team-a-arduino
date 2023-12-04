@@ -5,29 +5,9 @@ import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
 
-public class Condition implements Visitable {
-
-    private Sensor sensor;
-    private SIGNAL value;
+public abstract class Condition implements Visitable {
 
     private OPERATOR operator;
-
-
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    public SIGNAL getValue() {
-        return value;
-    }
-
-    public void setValue(SIGNAL value) {
-        this.value = value;
-    }
 
     public OPERATOR getOperator() {
         return operator;
@@ -42,14 +22,5 @@ public class Condition implements Visitable {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "Condition{" +
-                "sensor=" + sensor +
-                ", value=" + value +
-                ", operator=" + operator +
-                '}';
     }
 }
