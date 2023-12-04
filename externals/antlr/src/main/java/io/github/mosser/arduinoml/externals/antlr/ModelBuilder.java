@@ -65,6 +65,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
                 Transition t = new Transition();
                 t.setNext(states.get(binding.to));
                 t.setConditions(binding.conditions);
+                t.setActions(binding.actions);
                 states.get(key).addTransition(t);
             }
         });
@@ -167,30 +168,17 @@ public class ModelBuilder extends ArduinomlBaseListener {
             conditionContext=conditionContext.more;
         }
 
-        Action action = new Action();
         ArduinomlParser.NewActionContext actionContext = ctx.mealy;
-        action.setActuator(actuators.get(actionContext.action().receiver.getText()));
-        action.setValue(SIGNAL.valueOf(actionContext.action().value.getText()));
-        actions.add(action);
-
-        actionContext = ctx.mealy;
         while (actionContext != null){
-            action = new Action();
-            action.setActuator(actuators.get(actionContext.action().receiver.getText()));
-            action.setValue(SIGNAL.valueOf(actionContext.action().value.getText()));
+            Action action = new Action();
+            action.setActuator(actuators.get(actionContext.receiver.getText()));
+            action.setValue(SIGNAL.valueOf(actionContext.value.getText()));
             actions.add(action);
             actionContext = actionContext.mealy;
         }
 
         bindings.computeIfAbsent(currentState.getName(), k -> new ArrayList<>());
         bindings.get(currentState.getName()).add(toBeResolvedLater);
-
-        Transition transition = new Transition();
-        State state = states.get(toBeResolvedLater.to);
-        transition.setNext(state);
-        transition.setConditions(conditions);
-        transition.setActions(actions);
-        currentState.getTransitions().add(transition);
     }
 
     @Override

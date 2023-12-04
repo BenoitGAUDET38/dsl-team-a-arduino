@@ -21,7 +21,7 @@ states          :   state+;
     actionLCD   :   receiver=IDENTIFIER (':' text=STRING ('row' rowNumber=NUMBER)? )? '<=' isDisplayed=BOOLEAN;
     transition  :   trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)? ('(' mealy=newAction ')')? '=>' next=IDENTIFIER ;
     condition   :   operator=OPERATOR trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?;
-    newAction   :   action (', ' mealy=newAction)?;
+    newAction   :   receiver=IDENTIFIER '<=' value=SIGNAL (', ' mealy=newAction)?;
     initial     :   '->';
 
 /*****************
