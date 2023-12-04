@@ -8,15 +8,11 @@ STATE currentState = none;
 
 boolean button1BounceGuard = false;
 long button1LastDebounceTime = 0;
-
-boolean button2BounceGuard = false;
-long button2LastDebounceTime = 0;
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2,3,4,5,6,7,8); // screen [LCD Actuator]
 
 void setup(){
   pinMode(9, INPUT);  // button1 [Sensor]
-  pinMode(10, INPUT);  // button2 [Sensor]
   lcd.begin(16,2); // screen [Actuator]
   pinMode(11, OUTPUT); // snooze1 [Actuator]
   pinMode(12, OUTPUT); // led1 [Actuator]
