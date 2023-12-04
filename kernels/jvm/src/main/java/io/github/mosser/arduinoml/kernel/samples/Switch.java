@@ -64,15 +64,15 @@ public class Switch {
 		// Creating transitions
 		Transition on2off = new Transition();
 		on2off.setNext(off);
-		Condition cond1 = new Condition();
+		ConditionSensor cond1 = new ConditionSensor();
 		cond1.setSensor(button);
 		cond1.setValue(SIGNAL.HIGH);
 		cond1.setOperator(OPERATOR.EMPTY);
-		Condition cond2 = new Condition();
+		ConditionSensor cond2 = new ConditionSensor();
 		cond2.setSensor(button2);
 		cond2.setValue(SIGNAL.HIGH);
 		cond2.setOperator(OPERATOR.AND);
-		Condition cond4 = new Condition();
+		ConditionSensor cond4 = new ConditionSensor();
 		cond4.setSensor(button3);
 		cond4.setValue(SIGNAL.HIGH);
 		cond4.setOperator(OPERATOR.OR);
@@ -80,7 +80,7 @@ public class Switch {
 
 		Transition off2on = new Transition();
 		off2on.setNext(on);
-		Condition cond3 = new Condition();
+		ConditionSensor cond3 = new ConditionSensor();
 		cond3.setSensor(button);
 		cond3.setValue(SIGNAL.HIGH);
 		cond3.setOperator(OPERATOR.EMPTY);
@@ -155,7 +155,7 @@ public class Switch {
 		// Creating transitions
 		Transition on2off = new Transition();
 		on2off.setNext(off);
-		Condition cond1 = new Condition();
+		ConditionSensor cond1 = new ConditionSensor();
 		cond1.setSensor(button);
 		cond1.setValue(SIGNAL.HIGH);
 		cond1.setOperator(OPERATOR.EMPTY);
@@ -164,7 +164,7 @@ public class Switch {
 
 		Transition off2on = new Transition();
 		off2on.setNext(on);
-		Condition cond3 = new Condition();
+		ConditionSensor cond3 = new ConditionSensor();
 		cond3.setSensor(button);
 		cond3.setValue(SIGNAL.HIGH);
 		cond3.setOperator(OPERATOR.EMPTY);

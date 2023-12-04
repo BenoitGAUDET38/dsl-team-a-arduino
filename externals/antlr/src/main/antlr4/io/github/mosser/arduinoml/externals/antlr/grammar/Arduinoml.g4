@@ -17,7 +17,7 @@ bricks          :   (sensor|actuator|actuatorLCD)+;
 
 states          :   state+;
     state       :   initial? name=IDENTIFIER '{'  action+ (actionLCD+)? transition+  '}';
-    action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
+    action      :   receiver=IDENTIFIER (duration=NUMBER)? '<=' value=SIGNAL;
     actionLCD   :   receiver=IDENTIFIER (':' text=STRING ('row' rowNumber=NUMBER)? )? '<=' isDisplayed=BOOLEAN;
     transition  :   trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)? '=>' next=IDENTIFIER ;
     condition   :   operator=OPERATOR trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?;
@@ -27,7 +27,7 @@ states          :   state+;
  ** Lexer rules **
  *****************/
 
-NUMBER          :   [1-9] | '10' | '11' | '12';
+NUMBER          :   [1-9][0-9]*;
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
 SIGNAL          :   'HIGH' | 'LOW';
 OPERATOR        :   'AND' | 'OR';

@@ -1,0 +1,20 @@
+### Basic scenario
+## Very simple alarm: Pushing a button activates a LED during 800ms.
+
+application simpleAlarm
+
+# Declaring bricks
+sensor button: 9
+actuator led: 12
+
+# Declaring states
+on {
+    led 800 <= HIGH
+    button is LOW => off
+}
+
+-> off {
+    led <= LOW
+    button is HIGH => on
+}
+

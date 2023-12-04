@@ -61,7 +61,7 @@ public class MealyMachineSample {
 		// Creating transitions
 		Transition onLed1_offLed2 = new Transition();
 		onLed1_offLed2.setNext(error);
-		Condition cond1 = new Condition();
+		ConditionSensor cond1 = new ConditionSensor();
 		cond1.setSensor(button1);
 		cond1.setValue(SIGNAL.HIGH);
 		cond1.setOperator(OPERATOR.EMPTY);
@@ -70,7 +70,7 @@ public class MealyMachineSample {
 
 		Transition offLed1_onLed2 = new Transition();
 		offLed1_onLed2.setNext(error);
-		Condition cond2 = new Condition();
+		ConditionSensor cond2 = new ConditionSensor();
 		cond2.setSensor(button2);
 		cond2.setValue(SIGNAL.HIGH);
 		cond2.setOperator(OPERATOR.EMPTY);
@@ -79,7 +79,7 @@ public class MealyMachineSample {
 
 		Transition onLed1_onLed2 = new Transition();
 		onLed1_onLed2.setNext(error);
-		Condition cond3 = new Condition();
+		ConditionSensor cond3 = new ConditionSensor();
 		cond3.setSensor(button3);
 		cond3.setValue(SIGNAL.HIGH);
 		cond3.setOperator(OPERATOR.EMPTY);
