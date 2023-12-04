@@ -43,6 +43,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     private class Binding { // used to support state resolution for transitions
         String to;
         List<Condition> conditions;
+        List<Action> actions;
     }
 
     private State currentState = null;
@@ -142,9 +143,12 @@ public class ModelBuilder extends ArduinomlBaseListener {
     public void enterTransition(ArduinomlParser.TransitionContext ctx) {
         // Creating a placeholder as the next state might not have been compiled yet.
         Binding toBeResolvedLater = new Binding();
-        List<Condition> conditions= new ArrayList<>();
-        toBeResolvedLater.to      = ctx.next.getText();
-        toBeResolvedLater.conditions=conditions;
+        List<Condition> conditions = new ArrayList<>();
+        List<Action> actions = new ArrayList<>();
+
+        toBeResolvedLater.to = ctx.next.getText();
+        toBeResolvedLater.conditions = conditions;
+        toBeResolvedLater.actions = actions;
 
         Condition condition= new Condition();
         condition.setOperator(OPERATOR.EMPTY);
@@ -152,9 +156,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
         condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
         conditions.add(condition);
 
-
         ArduinomlParser.ConditionContext conditionContext= ctx.more;
-
 
         while(conditionContext!=null){
             condition= new Condition();
@@ -164,6 +166,22 @@ public class ModelBuilder extends ArduinomlBaseListener {
             conditions.add(condition);
             conditionContext=conditionContext.more;
         }
+
+        Action action = new Action();
+        ArduinomlParser.NewActionContext actionContext = ctx.mealy;
+        action.setActuator(actuators.get(actionContext.action().receiver.getText()));
+        action.setValue(SIGNAL.valueOf(actionContext.action().value.getText()));
+        actions.add(action);
+
+        actionContext = ctx.mealy;
+        while (actionContext != null){
+            action = new Action();
+            action.setActuator(actuators.get(actionContext.action().receiver.getText()));
+            action.setValue(SIGNAL.valueOf(actionContext.action().value.getText()));
+            actions.add(action);
+            actionContext = actionContext.mealy;
+        }
+
         bindings.computeIfAbsent(currentState.getName(), k -> new ArrayList<>());
         bindings.get(currentState.getName()).add(toBeResolvedLater);
     }

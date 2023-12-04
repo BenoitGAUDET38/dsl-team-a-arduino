@@ -16,11 +16,12 @@ bricks          :   (sensor|actuator|actuatorLCD)+;
     location    :   id=IDENTIFIER ':' port=NUMBER;
 
 states          :   state+;
-    state       :   initial? name=IDENTIFIER '{'  action+ (actionLCD+)? transition+  '}';
+    state       :   initial? name=IDENTIFIER '{'  (action+)? (actionLCD+)? (transition+)?  '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
     actionLCD   :   receiver=IDENTIFIER (':' text=STRING ('row' rowNumber=NUMBER)? )? '<=' isDisplayed=BOOLEAN;
-    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)? '=>' next=IDENTIFIER ;
+    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)? ('(' mealy=newAction ')')? '=>' next=IDENTIFIER ;
     condition   :   operator=OPERATOR trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?;
+    newAction   :   action (', ' mealy=newAction)?;
     initial     :   '->';
 
 /*****************
