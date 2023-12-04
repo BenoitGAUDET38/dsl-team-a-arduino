@@ -31,18 +31,6 @@ void loop() {
 			lcd.print("Led : ON");
 			lcd.setCursor(0,1);
 			lcd.print("Snooze : ON");
-			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
-			if (digitalRead(10) == LOW && button2BounceGuard) {
-				button2LastDebounceTime = millis();
-				currentState = snooze;
-				lcd.clear();
-			}
-			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
-			if (digitalRead(10) == LOW && button2BounceGuard) {
-				button2LastDebounceTime = millis();
-				currentState = led;
-				lcd.clear();
-			}
 		break;
 		case led:
 			digitalWrite(12,HIGH);
@@ -51,12 +39,6 @@ void loop() {
 			lcd.print("Led : ON");
 			lcd.setCursor(0,1);
 			lcd.print("Snooze : OFF");
-			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
-			if (digitalRead(9) == LOW && button1BounceGuard) {
-				button1LastDebounceTime = millis();
-				currentState = none;
-				lcd.clear();
-			}
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
@@ -71,12 +53,6 @@ void loop() {
 			lcd.print("Led : OFF");
 			lcd.setCursor(0,1);
 			lcd.print("Snooze : ON");
-			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
-			if (digitalRead(10) == LOW && button2BounceGuard) {
-				button2LastDebounceTime = millis();
-				currentState = none;
-				lcd.clear();
-			}
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();

@@ -44,7 +44,7 @@ void loop() {
 			lcd.setCursor(0,0);
 			lcd.print("Led : OFF");
 			lcd.setCursor(0,1);
-			lcd.print("Snooze : ON");
+			lcd.print("Buzzer : ON");
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
@@ -58,7 +58,7 @@ void loop() {
 			lcd.setCursor(0,0);
 			lcd.print("Led : OFF");
 			lcd.setCursor(0,1);
-			lcd.print("Snooze : OFF");
+			lcd.print("Buzzer : OFF");
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
