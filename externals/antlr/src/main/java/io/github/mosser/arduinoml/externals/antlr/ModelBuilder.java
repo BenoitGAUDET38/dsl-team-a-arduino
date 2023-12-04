@@ -131,7 +131,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
         actionLCD.setActuatorLCD(actuatorLCD);
         actionLCD.setDisplayText(ctx.isDisplayed.getText().equals("TRUE"));
         if (ctx.isDisplayed.getText().equals("TRUE")){
-            actionLCD.setText(ctx.text.getText());
+            actionLCD.setText(ctx.text.getText().substring(1,ctx.text.getText().length()-1));
             if (ctx.rowNumber!=null)
                 actionLCD.setRowNumber(Integer.parseInt(ctx.rowNumber.getText()));
         }
