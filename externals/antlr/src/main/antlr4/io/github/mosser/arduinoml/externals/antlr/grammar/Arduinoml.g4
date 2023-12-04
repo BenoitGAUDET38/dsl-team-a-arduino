@@ -32,13 +32,12 @@ IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
 SIGNAL          :   'HIGH' | 'LOW';
 OPERATOR        :   'AND' | 'OR';
 BOOLEAN         :   'TRUE' | 'FALSE';
-STRING          :   (LOWERCASE | UPPERCASE | CHARACTERS)+;
+STRING          :   ["][' 'a-zA-Z1-9:]*["];
 
 /*************
  ** Helpers **
  *************/
 
-fragment CHARACTERS : '_' ;
 fragment LOWERCASE  : [a-z];                                 // abstract rule, does not really exists
 fragment UPPERCASE  : [A-Z];
 NEWLINE             : ('\r'? '\n' | '\r')+      -> skip;

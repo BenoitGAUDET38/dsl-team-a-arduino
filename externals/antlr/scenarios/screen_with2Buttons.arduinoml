@@ -2,7 +2,7 @@
 ## State-based alarm: Pushing the button once switches the screen on with a Hello World message.
 ## Pushing it again switches it off.
 
-application screenHelloWorld
+application screenButtons
 
 # Declaring bricks
 sensor buttonLed: 9
@@ -16,8 +16,8 @@ actuator led: 12
 buzzerON {
     buzzer <= HIGH
     led <= LOW
-    lcd : Buzzer_ON <= TRUE
-    lcd : Led_OFF row 2 <= TRUE
+    lcd : "Buzzer : ON" <= TRUE
+    lcd : "Led : OFF" row 2 <= TRUE
     buttonLed is HIGH => bothON
     buttonBuz is HIGH => off
 }
@@ -25,8 +25,8 @@ buzzerON {
 ledON {
     buzzer <= LOW
     led <= HIGH
-    lcd : Buzzer_OFF <= TRUE
-    lcd : Led_ON row 1 <= TRUE
+    lcd : "Buzzer : OFF" <= TRUE
+    lcd : "Led : ON" row 1 <= TRUE
     buttonLed is HIGH => off
     buttonBuz is HIGH => bothON
 }
@@ -34,8 +34,8 @@ ledON {
 bothON {
     buzzer <= HIGH
     led <= HIGH
-    lcd : Buzzer_ON <= TRUE
-    lcd : Led_ON row 1 <= TRUE
+    lcd : "Buzzer : ON" <= TRUE
+    lcd : "Led : ON" row 1 <= TRUE
     buttonLed is HIGH =>  buzzerON
     buttonBuz is HIGH =>  ledON
 }
@@ -43,8 +43,8 @@ bothON {
 -> off {
     led <= LOW
     buzzer <= LOW
-    lcd : Buzzer_OFF <= TRUE
-    lcd : Led_OFF row 1 <= TRUE
+    lcd : "Buzzer : OFF" <= TRUE
+    lcd : "Led : OFF" row 1 <= TRUE
     buttonLed is HIGH =>  ledON
     buttonBuz is HIGH =>  buzzerON
 }
