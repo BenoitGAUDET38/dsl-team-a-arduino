@@ -19,7 +19,7 @@ states          :   state+;
     state       :   initial? name=IDENTIFIER '{'  (action+)? (actionLCD+)? (transition+)?  '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
     actionLCD   :   receiver=IDENTIFIER (':' text=STRING ('row' rowNumber=NUMBER)? )? '<=' isDisplayed=BOOLEAN;
-    transition  :   ('after' time=NUMBER 'ms') | (trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)? ('(' mealy=newAction ')')?) '=>' next=IDENTIFIER ;
+    transition  :   (('after' time=NUMBER 'ms') | (trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?) ('(' mealy=newAction ')')?)) '=>' next=IDENTIFIER ;
     condition   :   operator=OPERATOR trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?;
     newAction   :   receiver=IDENTIFIER '<=' value=SIGNAL (', ' mealy=newAction)?;
     initial     :   '->';
