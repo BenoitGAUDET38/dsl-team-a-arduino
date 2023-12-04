@@ -184,6 +184,18 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
         bindings.computeIfAbsent(currentState.getName(), k -> new ArrayList<>());
         bindings.get(currentState.getName()).add(toBeResolvedLater);
+
+        Transition transition = new Transition();
+        State state = new State();
+        for (State s : this.theApp.getStates()){
+            if (s.getName().equals(ctx.next.getText())){
+                state = s;
+            }
+        }
+        transition.setNext(state);
+        transition.setConditions(conditions);
+        transition.setActions(actions);
+        currentState.getTransitions().add(transition);
     }
 
     @Override
