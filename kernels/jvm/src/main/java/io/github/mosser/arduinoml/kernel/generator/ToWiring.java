@@ -176,28 +176,40 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Condition condition) {
-		if(context.get("cond_pass") == COND_PASS.ONE) {
-			String sensorName = condition.getSensor().getName();
+		if(context.get("cond_pass") == COND_PASS.ONE && condition instanceof ConditionSensor) {
+			ConditionSensor conditionSensor = (ConditionSensor) condition;
+			String sensorName = conditionSensor.getSensor().getName();
 			w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
 					sensorName, sensorName));
 		}
 		if(context.get("cond_pass") == COND_PASS.TWO) {
+			String stringToAdd="";
+			if (condition instanceof ConditionSensor) {
+				ConditionSensor conditionSensor = (ConditionSensor) condition;
+				stringToAdd=String.format("digitalRead(%d) == %s", conditionSensor.getSensor().getPin(), conditionSensor.getValue());
+			}
+			else if (condition instanceof ConditionDelay) {
+				ConditionDelay conditionDelay = (ConditionDelay) condition;
+				stringToAdd=String.format("millis() - timerSinceNewState > %d", conditionDelay.getDelay());
+			}
 			if(condition.getOperator() == OPERATOR.EMPTY) {
-				w(String.format("digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+				w(stringToAdd);
 			}
 			else if (condition.getOperator() == OPERATOR.AND) {
-				w(String.format(" && digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+				w(String.format(" && %s", stringToAdd));
 			}
 			else if (condition.getOperator() == OPERATOR.OR) {
-				w(String.format(" || digitalRead(%d) == %s", condition.getSensor().getPin(), condition.getValue()));
+				w(String.format(" || %s", stringToAdd));
 			}
 		}
-		if(context.get("cond_pass") == COND_PASS.THREE) {
-			String sensorName = condition.getSensor().getName();
+		if(context.get("cond_pass") == COND_PASS.THREE  && condition instanceof ConditionSensor ) {
+			ConditionSensor conditionSensor = (ConditionSensor) condition;
+			String sensorName = conditionSensor.getSensor().getName();
 			w(String.format(" && %sBounceGuard", sensorName));
 		}
-		if(context.get("cond_pass") == COND_PASS.FOUR) {
-			String sensorName = condition.getSensor().getName();
+		if(context.get("cond_pass") == COND_PASS.FOUR  && condition instanceof ConditionSensor ) {
+			ConditionSensor conditionSensor = (ConditionSensor) condition;
+			String sensorName = conditionSensor.getSensor().getName();
 			w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
 		}
 	}
@@ -209,17 +221,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
-			if (action instanceof ActionHold){
-				w(String.format("\t\t\tdelay(%d);\n", ((ActionHold) action).getDuration()));
-				w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getOppositeValue()));
-			}
         }
 		if (context.get("pass") == PASS.THREE) {
 			w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
-			if (action instanceof ActionHold){
-				w(String.format("\t\t\t\tdelay(%d);\n", ((ActionHold) action).getDuration()));
-				w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getOppositeValue()));
-			}
 		}
 	}
 
