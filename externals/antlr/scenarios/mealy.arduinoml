@@ -14,6 +14,11 @@ actuator ledOne: 8
 actuator ledTwo: 9
 
 # Declaring states
+
+error {
+
+}
+
 -> on {
     ledOne <= LOW
     ledTwo <= LOW
@@ -21,8 +26,4 @@ actuator ledTwo: 9
     buttonOne is HIGH (ledOne <= HIGH) => error
     buttonTwo is HIGH (ledTwo <= HIGH) => error
     buttonThree is HIGH (ledOne <= HIGH, ledTwo <= HIGH) => error
-}
-
-error {
-
 }
