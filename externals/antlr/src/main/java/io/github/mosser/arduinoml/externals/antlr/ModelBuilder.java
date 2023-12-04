@@ -44,6 +44,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     private class Binding { // used to support state resolution for transitions
         String to;
         List<Condition> conditions;
+        List<Action> actions;
     }
 
     private State currentState = null;
@@ -146,9 +147,13 @@ public class ModelBuilder extends ArduinomlBaseListener {
     public void enterTransition(ArduinomlParser.TransitionContext ctx) {
         // Creating a placeholder as the next state might not have been compiled yet.
         Binding toBeResolvedLater = new Binding();
-        List<Condition> conditions= new ArrayList<>();
-        toBeResolvedLater.to      = ctx.next.getText();
-        toBeResolvedLater.conditions=conditions;
+        List<Condition> conditions = new ArrayList<>();
+        List<Action> actions = new ArrayList<>();
+
+        toBeResolvedLater.to = ctx.next.getText();
+        toBeResolvedLater.conditions = conditions;
+        toBeResolvedLater.actions = actions;
+
         if (ctx.time!=null){
             ConditionDelay condition= new ConditionDelay();
             condition.setOperator(OPERATOR.EMPTY);
@@ -164,9 +169,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
         }
 
 
-
         ArduinomlParser.ConditionContext conditionContext= ctx.more;
-
 
         while(conditionContext!=null){
             Condition conditionToAdd;
@@ -188,6 +191,16 @@ public class ModelBuilder extends ArduinomlBaseListener {
             conditions.add(conditionToAdd);
             conditionContext=conditionContext.more;
         }
+
+        ArduinomlParser.NewActionContext actionContext = ctx.mealy;
+        while (actionContext != null){
+            Action action = new Action();
+            action.setActuator(actuators.get(actionContext.receiver.getText()));
+            action.setValue(SIGNAL.valueOf(actionContext.value.getText()));
+            actions.add(action);
+            actionContext = actionContext.mealy;
+        }
+
         bindings.computeIfAbsent(currentState.getName(), k -> new ArrayList<>());
         bindings.get(currentState.getName()).add(toBeResolvedLater);
     }

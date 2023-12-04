@@ -14,6 +14,8 @@ long buttonBuzLastDebounceTime = 0;
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2,3,4,5,6,7,8); // lcd [LCD Actuator]
 
+long timerSinceNewState = millis();
+
 void setup(){
   pinMode(9, INPUT);  // buttonLed [Sensor]
   pinMode(10, INPUT);  // buttonBuz [Sensor]
@@ -34,12 +36,14 @@ void loop() {
 			buttonLedBounceGuard = millis() - buttonLedLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonLedBounceGuard) {
 				buttonLedLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = bothON;
 				lcd.clear();
 			}
 			buttonBuzBounceGuard = millis() - buttonBuzLastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && buttonBuzBounceGuard) {
 				buttonBuzLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = off;
 				lcd.clear();
 			}
@@ -54,12 +58,14 @@ void loop() {
 			buttonLedBounceGuard = millis() - buttonLedLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonLedBounceGuard) {
 				buttonLedLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = off;
 				lcd.clear();
 			}
 			buttonBuzBounceGuard = millis() - buttonBuzLastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && buttonBuzBounceGuard) {
 				buttonBuzLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = bothON;
 				lcd.clear();
 			}
@@ -74,12 +80,14 @@ void loop() {
 			buttonLedBounceGuard = millis() - buttonLedLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonLedBounceGuard) {
 				buttonLedLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = buzzerON;
 				lcd.clear();
 			}
 			buttonBuzBounceGuard = millis() - buttonBuzLastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && buttonBuzBounceGuard) {
 				buttonBuzLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = ledON;
 				lcd.clear();
 			}
@@ -94,15 +102,18 @@ void loop() {
 			buttonLedBounceGuard = millis() - buttonLedLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonLedBounceGuard) {
 				buttonLedLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = ledON;
 				lcd.clear();
 			}
 			buttonBuzBounceGuard = millis() - buttonBuzLastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && buttonBuzBounceGuard) {
 				buttonBuzLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = buzzerON;
 				lcd.clear();
 			}
 		break;
 	}
 }
+current state: State{name='ledON', actions=[Action{value=LOW, actuator=Brick{name='buzzer', pin=11}}, Action{value=HIGH, actuator=Brick{name='led', pin=12}}], actionLCDS=[Action{displayText=true, actuator=Brick{name='lcd', pin=1}}, Action{displayText=true, actuator=Brick{name='lcd', pin=1}}], transitions=[Transition{next=off, conditions=[Condition{sensor=Brick{name='buttonLed', pin=9}, value=HIGH, operator=EMPTY}], actions=[]}, Transition{next=bothON, conditions=[Condition{sensor=Brick{name='buttonBuz', pin=10}, value=HIGH, operator=EMPTY}], actions=[]}]}

@@ -12,6 +12,8 @@ long buttonOneLastDebounceTime = 0;
 boolean buttonTwoBounceGuard = false;
 long buttonTwoLastDebounceTime = 0;
 
+long timerSinceNewState = millis();
+
 void setup(){
   pinMode(8, INPUT);  // buttonOne [Sensor]
   pinMode(9, INPUT);  // buttonTwo [Sensor]
@@ -24,9 +26,12 @@ void loop() {
 			digitalWrite(11,HIGH);
 			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
 			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			if (digitalRead(8) == LOW || digitalRead(9) == LOW && buttonOneBounceGuard && buttonTwoBounceGuard) {
+			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
+			if (digitalRead(8) == LOW || digitalRead(9) == LOW || digitalRead(9) == LOW && buttonOneBounceGuard && buttonTwoBounceGuard && buttonTwoBounceGuard) {
 				buttonOneLastDebounceTime = millis();
 				buttonTwoLastDebounceTime = millis();
+				buttonTwoLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = off;
 			}
 		break;
@@ -34,11 +39,15 @@ void loop() {
 			digitalWrite(11,LOW);
 			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
 			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			if (digitalRead(8) == HIGH && digitalRead(9) == HIGH && buttonOneBounceGuard && buttonTwoBounceGuard) {
+			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
+			if (digitalRead(8) == HIGH && digitalRead(9) == HIGH && digitalRead(9) == HIGH && buttonOneBounceGuard && buttonTwoBounceGuard && buttonTwoBounceGuard) {
 				buttonOneLastDebounceTime = millis();
 				buttonTwoLastDebounceTime = millis();
+				buttonTwoLastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = on;
 			}
 		break;
 	}
 }
+current state: State{name='off', actions=[Action{value=LOW, actuator=Brick{name='buzzer', pin=11}}], actionLCDS=[], transitions=[Transition{next=on, conditions=[Condition{sensor=Brick{name='buttonOne', pin=8}, value=HIGH, operator=EMPTY}, Condition{sensor=Brick{name='buttonTwo', pin=9}, value=HIGH, operator=AND}, Condition{sensor=Brick{name='buttonTwo', pin=9}, value=HIGH, operator=AND}], actions=[]}]}
