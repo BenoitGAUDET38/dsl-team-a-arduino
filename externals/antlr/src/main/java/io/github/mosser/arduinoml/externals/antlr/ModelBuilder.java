@@ -9,6 +9,7 @@ import io.github.mosser.arduinoml.kernel.structural.Actuator;
 import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
+import org.antlr.v4.runtime.atn.ActionTransition;
 import org.antlr.v4.runtime.atn.SemanticContext;
 
 import java.util.ArrayList;
@@ -123,8 +124,13 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterAction(ArduinomlParser.ActionContext ctx) {
         Action action = new Action();
+        if (ctx.duration!=null){
+            action = new ActionHold();
+            ((ActionHold) action).setDuration(Integer.parseInt(ctx.duration.getText()));
+        }
         action.setActuator(actuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
+
         currentState.getActions().add(action);
     }
     @Override
@@ -133,7 +139,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
         actionLCD.setActuatorLCD(actuatorLCD);
         actionLCD.setDisplayText(ctx.isDisplayed.getText().equals("TRUE"));
         if (ctx.isDisplayed.getText().equals("TRUE")){
-            actionLCD.setText(ctx.text.getText());
+            actionLCD.setText(ctx.text.getText().substring(1,ctx.text.getText().length()-1));
             if (ctx.rowNumber!=null)
                 actionLCD.setRowNumber(Integer.parseInt(ctx.rowNumber.getText()));
         }

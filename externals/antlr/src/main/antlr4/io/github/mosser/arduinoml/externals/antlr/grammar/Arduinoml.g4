@@ -28,12 +28,12 @@ states          :   state+;
  ** Lexer rules **
  *****************/
 
-NUMBER          :   [1-9] | '10' | '11' | '12';
+NUMBER          :   [1-9][0-9]*;
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
 SIGNAL          :   'HIGH' | 'LOW';
 OPERATOR        :   'AND' | 'OR';
 BOOLEAN         :   'TRUE' | 'FALSE';
-STRING          :   (LOWERCASE | UPPERCASE)+;
+STRING          :   ["][' 'a-zA-Z1-9:]*["];
 
 /*************
  ** Helpers **

@@ -37,38 +37,41 @@ abstract class GroovuinoMLBasescript extends Script {
 		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions, actionLCDS)
 		// recursive closure to allow multiple and statements
 		def closure
+		def closureLCD
+
 		closure = { actuator -> 
 			[becomes: { signal ->
 				Action action = new Action()
 				action.setActuator(actuator instanceof String ? (Actuator)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (Actuator)actuator)
 				action.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				actions.add(action)
-				[and: closure]
+				[and: closure, andLCD: closureLCD]
 			}]
 		}
-		[means: closure]
 
-		def closureLCD
 		closureLCD = { actuatorLCD ->
 			[display: { text ->
-				ActionLCD actionLCD = new ActionLCD()
-				actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
-				actionLCD.setDisplayText(true)
-				actionLCD.setText(text)
-				actionLCDS.add(actionLCD)
-				[and: closureLCD]
+				[row: { rowNumber ->
+					ActionLCD actionLCD = new ActionLCD()
+					actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
+					actionLCD.setDisplayText(true)
+					actionLCD.setText(text)
+					actionLCD.setRowNumber(rowNumber)
+					actionLCDS.add(actionLCD)
+					[and: closure, andLCD: closureLCD]
+				}]
 			},
-			hide: { text ->
-				ActionLCD actionLCD = new ActionLCD()
-				actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
-				actionLCD.setDisplayText(false)
-				actionLCD.setText("")
-				actionLCDS.add(actionLCD)
-				[and: closureLCD]
-			}
+//			hide: { text ->
+//				ActionLCD actionLCD = new ActionLCD()
+//				actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
+//				actionLCD.setDisplayText(false)
+//				actionLCD.setText("")
+//				actionLCDS.add(actionLCD)
+//				[and: closure, andLCD: closureLCD]
+//			}
 			]
 		}
-		[means: closureLCD]
+		[means: closure, meansLCD: closureLCD]
 	}
 	
 	// initial state

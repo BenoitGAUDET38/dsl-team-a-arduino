@@ -12,13 +12,11 @@ long button1LastDebounceTime = 0;
 boolean button2BounceGuard = false;
 long button2LastDebounceTime = 0;
 
-boolean button3BounceGuard = false;
-long button3LastDebounceTime = 0;
+long timerSinceNewState = millis();
 
 void setup(){
   pinMode(8, INPUT);  // button1 [Sensor]
   pinMode(9, INPUT);  // button2 [Sensor]
-  pinMode(10, INPUT);  // button3 [Sensor]
   pinMode(11, OUTPUT); // led1 [Actuator]
   pinMode(12, OUTPUT); // led2 [Actuator]
 }
@@ -32,21 +30,14 @@ void loop() {
 			if (digitalRead(8) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
 				digitalWrite(11,HIGH);
-				digitalWrite(12,LOW);
+				timerSinceNewState = millis();
 				currentState = error;
 			}
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
-				digitalWrite(11,LOW);
 				digitalWrite(12,HIGH);
-				currentState = error;
-			}
-			button3BounceGuard = millis() - button3LastDebounceTime > debounce;
-			if (digitalRead(10) == HIGH && button3BounceGuard) {
-				button3LastDebounceTime = millis();
-				digitalWrite(11,HIGH);
-				digitalWrite(12,HIGH);
+				timerSinceNewState = millis();
 				currentState = error;
 			}
 		break;

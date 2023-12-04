@@ -14,16 +14,16 @@ actuator led: 12
 on {
     buzzer <= HIGH
     buzzer <= LOW
-    lcd : BuzzerOn <= TRUE
-    lcd : LedOff row 1 <= TRUE
+    lcd : "Buzzer : ON" <= TRUE
+    lcd : "Led : OFF" row 1 <= TRUE
     button is HIGH =>  step
 }
 
 step {
     buzzer <= LOW
     led <= HIGH
-    lcd : BuzzerOff <= TRUE
-    lcd : LedOn row 1 <= TRUE
+    lcd : "Buzzer : OFF" <= TRUE
+    lcd : "Led : ON" row 1 <= TRUE
     button is HIGH => off
 }
 
