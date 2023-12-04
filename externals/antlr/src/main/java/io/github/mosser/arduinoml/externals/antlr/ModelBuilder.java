@@ -66,7 +66,6 @@ public class ModelBuilder extends ArduinomlBaseListener {
                 Transition t = new Transition();
                 t.setNext(states.get(binding.to));
                 t.setConditions(binding.conditions);
-                t.setActions(binding.actions);
                 states.get(key).addTransition(t);
             }
         });
@@ -124,10 +123,6 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterAction(ArduinomlParser.ActionContext ctx) {
         Action action = new Action();
-        if (ctx.duration!=null){
-            action = new ActionHold();
-            ((ActionHold) action).setDuration(Integer.parseInt(ctx.duration.getText()));
-        }
         action.setActuator(actuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
 
@@ -157,20 +152,41 @@ public class ModelBuilder extends ArduinomlBaseListener {
         toBeResolvedLater.conditions = conditions;
         toBeResolvedLater.actions = actions;
 
-        Condition condition= new Condition();
-        condition.setOperator(OPERATOR.EMPTY);
-        condition.setSensor(sensors.get(ctx.trigger.getText()));
-        condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
-        conditions.add(condition);
+        if (ctx.time!=null){
+            ConditionDelay condition= new ConditionDelay();
+            condition.setOperator(OPERATOR.EMPTY);
+            condition.setDelay(Integer.parseInt(ctx.time.getText()));
+            conditions.add(condition);
+        }
+        else{
+            ConditionSensor condition= new ConditionSensor();
+            condition.setOperator(OPERATOR.EMPTY);
+            condition.setSensor(sensors.get(ctx.trigger.getText()));
+            condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
+            conditions.add(condition);
+        }
+
 
         ArduinomlParser.ConditionContext conditionContext= ctx.more;
 
         while(conditionContext!=null){
-            condition= new Condition();
-            condition.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
-            condition.setSensor(sensors.get(conditionContext.trigger.getText()));
-            condition.setValue(SIGNAL.valueOf(conditionContext.value.getText()));
-            conditions.add(condition);
+            Condition conditionToAdd;
+            if (ctx.time!=null){
+                ConditionDelay condition= new ConditionDelay();
+                condition.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
+                condition.setDelay(Integer.parseInt(ctx.time.getText()));
+                conditions.add(condition);
+                conditionToAdd=condition;
+            }
+            else{
+                ConditionSensor condition= new ConditionSensor();
+                condition.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
+                condition.setSensor(sensors.get(conditionContext.trigger.getText()));
+                condition.setValue(SIGNAL.valueOf(conditionContext.value.getText()));
+                conditions.add(condition);
+                conditionToAdd=condition;
+            }
+            conditions.add(conditionToAdd);
             conditionContext=conditionContext.more;
         }
 
