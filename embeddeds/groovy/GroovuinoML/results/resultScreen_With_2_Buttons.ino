@@ -14,6 +14,8 @@ long button2LastDebounceTime = 0;
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2,3,4,5,6,7,8); // screen [LCD Actuator]
 
+long timerSinceNewState = millis();
+
 void setup(){
   pinMode(9, INPUT);  // button1 [Sensor]
   pinMode(10, INPUT);  // button2 [Sensor]
@@ -34,12 +36,14 @@ void loop() {
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = led;
 				lcd.clear();
 			}
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = snooze;
 				lcd.clear();
 			}
@@ -54,12 +58,14 @@ void loop() {
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = none;
 				lcd.clear();
 			}
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = both;
 				lcd.clear();
 			}
@@ -74,12 +80,14 @@ void loop() {
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = none;
 				lcd.clear();
 			}
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = both;
 				lcd.clear();
 			}
@@ -94,12 +102,14 @@ void loop() {
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = led;
 				lcd.clear();
 			}
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = snooze;
 				lcd.clear();
 			}
