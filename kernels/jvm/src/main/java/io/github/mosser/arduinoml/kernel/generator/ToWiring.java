@@ -205,9 +205,17 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
+			if (action instanceof ActionHold){
+				w(String.format("\t\t\tdelay(%d);\n", ((ActionHold) action).getDuration()));
+				w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getOppositeValue()));
+			}
         }
 		if (context.get("pass") == PASS.THREE) {
 			w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
+			if (action instanceof ActionHold){
+				w(String.format("\t\t\t\tdelay(%d);\n", ((ActionHold) action).getDuration()));
+				w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getOppositeValue()));
+			}
 		}
 	}
 
