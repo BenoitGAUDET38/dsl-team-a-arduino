@@ -2,11 +2,13 @@ package main.groovy.groovuinoml.dsl
 
 import io.github.mosser.arduinoml.kernel.behavioral.ActionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.ActionLCD
+import io.github.mosser.arduinoml.kernel.behavioral.ComposedCondition
 import io.github.mosser.arduinoml.kernel.behavioral.Condition
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionDelay
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.OPERATOR
+import io.github.mosser.arduinoml.kernel.behavioral.SimpleCondition
 import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD
 import io.github.mosser.arduinoml.kernel.behavioral.Action
 import io.github.mosser.arduinoml.kernel.behavioral.State
@@ -72,7 +74,7 @@ abstract class GroovuinoMLBasescript extends Script {
 	
 	// from state1 to state2 when sensor becomes signal [and/or sensor becomes signal [with actuator becomes signal [and actuator becomes signal]]]
 	def from(state1) {
-		List<Condition> conditions = new ArrayList<Condition>()
+		ComposedCondition currentCondition = new ComposedCondition()
 		List<Action> actions = new ArrayList<Action>()
 
 		def andClosure
@@ -83,10 +85,9 @@ abstract class GroovuinoMLBasescript extends Script {
 		andClosure = { sensor ->
 			[becomes: { signal ->
 				ConditionSensor condition = new ConditionSensor()
-				condition.setOperator(OPERATOR.AND)
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
-				conditions.add(condition)
+				currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.AND)
 				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 			}]
 		}
@@ -95,10 +96,9 @@ abstract class GroovuinoMLBasescript extends Script {
 		orClosure = { sensor ->
 			[becomes: { signal ->
 				ConditionSensor condition = new ConditionSensor()
-				condition.setOperator(OPERATOR.OR)
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
-				conditions.add(condition)
+				currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.OR)
 				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 			}]
 		}
@@ -129,34 +129,52 @@ abstract class GroovuinoMLBasescript extends Script {
 
 		afterClosure = { time ->
 			Condition condition = new ConditionDelay()
-			condition.setOperator(OPERATOR.AND)
 			condition.setDelay((int) time.amount * time.unit.multiplier)
-			conditions.add(condition)
+			currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.AND)
 			[and: andClosure, or: orClosure, with: withClosure]
 		}
 
 		[to: { state2 ->
-			((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
-					state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1,
-					state2 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state2) : (State)state2,
-					conditions, actions)
 			[when: { sensor ->
 				[becomes: { signal ->
 					ConditionSensor condition = new ConditionSensor()
-					condition.setOperator(OPERATOR.EMPTY)
 					condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 					condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
-					conditions.add(condition)
+					currentCondition.setLeft(condition)
+					((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
+							state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1,
+							state2 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state2) : (State)state2,
+							currentCondition,
+							actions)
 					[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 				}]
 			}, after: { time ->
-				Condition condition = new ConditionDelay()
-				condition.setOperator(OPERATOR.EMPTY)
+				ConditionDelay condition = new ConditionDelay()
 				condition.setDelay((int) time.amount * time.unit.multiplier)
-				conditions.add(condition)
+				currentCondition.setLeft(condition)
+				((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createTransition(
+						state1 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state1) : (State)state1,
+						state2 instanceof String ? (State)((GroovuinoMLBinding)this.getBinding()).getVariable(state2) : (State)state2,
+						currentCondition,
+						actions)
 				[with: withClosure]
 			}]
 		}]
+	}
+
+	def updateConditionTree(ComposedCondition currentCondition, Condition newCondition, OPERATOR operator) {
+		if (currentCondition.getRight() == null) {
+			currentCondition.setOperator(operator)
+			currentCondition.setRight(newCondition)
+			return currentCondition
+		} else {
+			ComposedCondition composedCondition = new ComposedCondition()
+			composedCondition.setOperator(operator)
+			composedCondition.setLeft(currentCondition.getRight())
+			composedCondition.setRight(newCondition)
+			currentCondition.setRight(composedCondition)
+			return composedCondition
+		}
 	}
 	
 	// export name

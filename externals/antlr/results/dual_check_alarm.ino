@@ -26,10 +26,8 @@ void loop() {
 			digitalWrite(11,HIGH);
 			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
 			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			if (digitalRead(8) == LOW || digitalRead(9) == LOW || digitalRead(9) == LOW && buttonOneBounceGuard && buttonTwoBounceGuard && buttonTwoBounceGuard) {
+			if (digitalRead(8) == LOW || digitalRead(9) == LOW && buttonOneBounceGuard && buttonTwoBounceGuard) {
 				buttonOneLastDebounceTime = millis();
-				buttonTwoLastDebounceTime = millis();
 				buttonTwoLastDebounceTime = millis();
 				timerSinceNewState = millis();
 				currentState = off;
@@ -39,10 +37,8 @@ void loop() {
 			digitalWrite(11,LOW);
 			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
 			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			if (digitalRead(8) == HIGH && digitalRead(9) == HIGH && digitalRead(9) == HIGH && buttonOneBounceGuard && buttonTwoBounceGuard && buttonTwoBounceGuard) {
+			if (digitalRead(8) == HIGH && digitalRead(9) == HIGH && buttonOneBounceGuard && buttonTwoBounceGuard) {
 				buttonOneLastDebounceTime = millis();
-				buttonTwoLastDebounceTime = millis();
 				buttonTwoLastDebounceTime = millis();
 				timerSinceNewState = millis();
 				currentState = on;

@@ -10,4 +10,12 @@ public class ConditionDelay extends SimpleCondition {
     public void setDelay(int delay) {
         this.delay = delay;
     }
+
+    @Override
+    public String toString() {
+        String delayString = Integer.toString(delay);
+        return "ConditionDelay{" +
+                "delay=" + delayString +
+                '}';
+    }
 }

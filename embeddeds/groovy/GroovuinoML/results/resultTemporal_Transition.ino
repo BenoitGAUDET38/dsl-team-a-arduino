@@ -39,13 +39,13 @@ void loop() {
 				currentState = on;
 			}
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
-			if (digitalRead(9) == HIGH && millis() - timerSinceNewState > 800 && button1BounceGuard) {
+			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
 				timerSinceNewState = millis();
 				currentState = on;
 			}
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
-			if (digitalRead(10) == HIGH && millis() - timerSinceNewState > 5200 && button2BounceGuard) {
+			if (digitalRead(10) == HIGH && button2BounceGuard) {
 				button2LastDebounceTime = millis();
 				digitalWrite(12,HIGH);
 				timerSinceNewState = millis();
