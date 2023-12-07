@@ -16,8 +16,8 @@ bricks          :   (sensor|actuator|actuatorLCD)+;
     location    :   id=IDENTIFIER ':' port=NUMBER;
 
 states          :   state+;
-    state       :   initial? name=IDENTIFIER '{'  (action+)? (actionLCD+)? (transition+)?  '}';
-    action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
+    state       :   initial? name=IDENTIFIER '{'  (actionSensor+)? (actionLCD+)? (transition+)?  '}';
+    actionSensor:   receiver=IDENTIFIER '<=' value=SIGNAL;
     actionLCD   :   receiver=IDENTIFIER (':' text=STRING ('row' rowNumber=NUMBER)? )? '<=' isDisplayed=BOOLEAN;
     transition  :   (('after' time=NUMBER 'ms') | (trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?) ('(' mealy=newAction ')')?) '=>' next=IDENTIFIER ;
     condition   :   operator=OPERATOR trigger=IDENTIFIER 'is' value=SIGNAL (more=condition)?;
@@ -33,7 +33,7 @@ IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
 SIGNAL          :   'HIGH' | 'LOW';
 OPERATOR        :   'AND' | 'OR';
 BOOLEAN         :   'TRUE' | 'FALSE';
-STRING          :   ["][' 'a-zA-Z1-9:]*["];
+STRING          :   ["][ a-zA-Z1-9:]*["];
 
 /*************
  ** Helpers **

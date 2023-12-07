@@ -18,7 +18,6 @@ public abstract class Visitor<T> {
 	public abstract void visit(SimpleCondition condition);
 
 	public abstract void visit(Action action);
-	public abstract void visit(ActionLCD actionLcd);
 
 	public abstract void visit(Actuator actuator);
 	public abstract void visit(Sensor sensor);

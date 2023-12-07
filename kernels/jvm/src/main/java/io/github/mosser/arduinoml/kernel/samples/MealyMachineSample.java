@@ -40,19 +40,19 @@ public class MealyMachineSample {
 		error.setName("error");
 
 		// Creating actions
-		Action led1On = new Action();
+		ActionSensor led1On = new ActionSensor();
 		led1On.setActuator(led1);
 		led1On.setValue(SIGNAL.HIGH);
 
-		Action led1Off = new Action();
+		ActionSensor led1Off = new ActionSensor();
 		led1Off.setActuator(led1);
 		led1Off.setValue(SIGNAL.LOW);
 
-		Action led2On = new Action();
+		ActionSensor led2On = new ActionSensor();
 		led2On.setActuator(led2);
 		led2On.setValue(SIGNAL.HIGH);
 
-		Action led2Off = new Action();
+		ActionSensor led2Off = new ActionSensor();
 		led2Off.setActuator(led2);
 		led2Off.setValue(SIGNAL.LOW);
 

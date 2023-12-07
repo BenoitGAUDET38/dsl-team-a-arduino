@@ -50,4 +50,3 @@ void loop() {
 		break;
 	}
 }
-current state: State{name='off', actions=[Action{value=LOW, actuator=Brick{name='buzzer', pin=11}}], actionLCDS=[], transitions=[Transition{next=on, conditions=[Condition{sensor=Brick{name='buttonOne', pin=8}, value=HIGH, operator=EMPTY}, Condition{sensor=Brick{name='buttonTwo', pin=9}, value=HIGH, operator=AND}, Condition{sensor=Brick{name='buttonTwo', pin=9}, value=HIGH, operator=AND}], actions=[]}]}

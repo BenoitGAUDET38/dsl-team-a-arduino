@@ -4,7 +4,7 @@ import io.github.mosser.arduinoml.kernel.generator.Visitable;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD;
 
-public class ActionLCD implements Visitable {
+public class ActionLCD extends Action {
 
 	private boolean displayText;
 	private int rowNumber=0;
@@ -46,16 +46,12 @@ public class ActionLCD implements Visitable {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
-
-
-	@Override
 	public String toString() {
 		return "Action{" +
 				"displayText=" + displayText +
 				", actuator=" + actuatorLCD +
+				", text=" + text +
+				", rowNumber=" + rowNumber +
 				'}';
 	}
 }

@@ -1,14 +1,13 @@
 package main.groovy.groovuinoml.dsl
 
+import io.github.mosser.arduinoml.kernel.behavioral.ActionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.ActionLCD
 import io.github.mosser.arduinoml.kernel.behavioral.Condition
+import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionDelay
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.OPERATOR
 import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD
-
-import java.util.List;
-
 import io.github.mosser.arduinoml.kernel.behavioral.Action
 import io.github.mosser.arduinoml.kernel.behavioral.State
 import io.github.mosser.arduinoml.kernel.structural.Actuator
@@ -35,45 +34,35 @@ abstract class GroovuinoMLBasescript extends Script {
 	// state "name" means actuator becomes signal [and actuator becomes signal]*n
 	def state(String name) {
 		List<Action> actions = new ArrayList<Action>()
-		List<ActionLCD> actionLCDS = new ArrayList<ActionLCD>()
-		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions, actionLCDS)
+		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions)
 		// recursive closure to allow multiple and statements
 		def closure
-		def closureLCD
 
 		closure = { actuator -> 
-			[becomes: { signal ->
-				Action action = new Action()
+			def sensor = { signal ->
+				ActionSensor action = new ActionSensor()
 				action.setActuator(actuator instanceof String ? (Actuator)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (Actuator)actuator)
 				action.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				actions.add(action)
-				[and: closure, andLCD: closureLCD]
-			}]
-		}
+				[and: closure]
+			}
 
-		closureLCD = { actuatorLCD ->
-			[display: { text ->
+			def lcd = { text ->
 				[row: { rowNumber ->
 					ActionLCD actionLCD = new ActionLCD()
-					actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
+					actionLCD.setActuatorLCD(actuator instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorLCD)actuator)
 					actionLCD.setDisplayText(true)
 					actionLCD.setText(text)
 					actionLCD.setRowNumber(rowNumber)
-					actionLCDS.add(actionLCD)
-					[and: closure, andLCD: closureLCD]
+					actions.add(actionLCD)
+					[and: closure]
 				}]
-			},
-//			hide: { text ->
-//				ActionLCD actionLCD = new ActionLCD()
-//				actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
-//				actionLCD.setDisplayText(false)
-//				actionLCD.setText("")
-//				actionLCDS.add(actionLCD)
-//				[and: closure, andLCD: closureLCD]
-//			}
-			]
+			}
+
+			[becomes: sensor, display: lcd]
 		}
-		[means: closure, meansLCD: closureLCD]
+
+		[means: closure]
 	}
 	
 	// initial state
@@ -93,7 +82,7 @@ abstract class GroovuinoMLBasescript extends Script {
 
 		andClosure = { sensor ->
 			[becomes: { signal ->
-				Condition condition = new ConditionSensor()
+				ConditionSensor condition = new ConditionSensor()
 				condition.setOperator(OPERATOR.AND)
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
@@ -105,7 +94,7 @@ abstract class GroovuinoMLBasescript extends Script {
 
 		orClosure = { sensor ->
 			[becomes: { signal ->
-				Condition condition = new ConditionSensor()
+				ConditionSensor condition = new ConditionSensor()
 				condition.setOperator(OPERATOR.OR)
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
@@ -115,13 +104,27 @@ abstract class GroovuinoMLBasescript extends Script {
 		}
 
 		withClosure = { actuator ->
-			[becomes: { signal ->
-				Action action = new Action()
-				action.setActuator(actuator instanceof String ? (Actuator) ((GroovuinoMLBinding) this.getBinding()).getVariable(actuator) : (Actuator) actuator)
-				action.setValue(signal instanceof String ? (SIGNAL) ((GroovuinoMLBinding) this.getBinding()).getVariable(signal) : (SIGNAL) signal)
+			def sensor = { signal ->
+				ActionSensor action = new ActionSensor()
+				action.setActuator(actuator instanceof String ? (Actuator)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (Actuator)actuator)
+				action.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				actions.add(action)
 				[and: withClosure]
-			}]
+			}
+
+			def lcd = { text ->
+				[row: { rowNumber ->
+					ActionLCD actionLCD = new ActionLCD()
+					actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorLCD)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorLCD)actuatorLCD)
+					actionLCD.setDisplayText(true)
+					actionLCD.setText(text)
+					actionLCD.setRowNumber(rowNumber)
+					actions.add(actionLCD)
+					[and: withClosure]
+				}]
+			}
+
+			[becomes: sensor, display: lcd]
 		}
 
 		afterClosure = { time ->
@@ -139,7 +142,7 @@ abstract class GroovuinoMLBasescript extends Script {
 					conditions, actions)
 			[when: { sensor ->
 				[becomes: { signal ->
-					Condition condition = new ConditionSensor();
+					ConditionSensor condition = new ConditionSensor()
 					condition.setOperator(OPERATOR.EMPTY)
 					condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 					condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)

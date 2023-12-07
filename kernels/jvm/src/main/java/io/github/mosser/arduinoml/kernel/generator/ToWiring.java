@@ -122,10 +122,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 				action.accept(this);
 			}
 
-			for (ActionLCD actionLCD : state.getActionLCDS()) {
-				actionLCD.accept(this);
-			}
-
 			if (state.getTransitions() != null) {
 				for(Transition transition : state.getTransitions()) {
 					transition.accept(this);
@@ -214,25 +210,32 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Action action) {
-		if(context.get("pass") == PASS.ONE) {
-			return;
-		}
-		if(context.get("pass") == PASS.TWO) {
-			w(String.format("\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
-        }
-		if (context.get("pass") == PASS.THREE) {
-			w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n",action.getActuator().getPin(),action.getValue()));
+        if (action instanceof ActionSensor) {
+            visit((ActionSensor) action);
+        } else if (action instanceof ActionLCD) {
+			visit((ActionLCD) action);
 		}
 	}
 
-	@Override
-	public void visit(ActionLCD actionLcd) {
+	private void visit(ActionSensor actionSensor) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}
 		if(context.get("pass") == PASS.TWO) {
-			if (actionLcd.isDisplayText()) {
-				w(String.format("\t\t\tlcd.setCursor(0,%d);\n\t\t\tlcd.print(\"%s\");\n", actionLcd.getRowNumber(),actionLcd.getText()));
+			w(String.format("\t\t\tdigitalWrite(%d,%s);\n", actionSensor.getActuator().getPin(), actionSensor.getValue()));
+		}
+		if (context.get("pass") == PASS.THREE) {
+			w(String.format("\t\t\t\tdigitalWrite(%d,%s);\n", actionSensor.getActuator().getPin(), actionSensor.getValue()));
+		}
+	}
+
+	private void visit(ActionLCD actionLCD) {
+		if(context.get("pass") == PASS.ONE) {
+			return;
+		}
+		if(context.get("pass") == PASS.TWO) {
+			if (actionLCD.isDisplayText()) {
+				w(String.format("\t\t\tlcd.setCursor(0,%d);\n\t\t\tlcd.print(\"%s\");\n", actionLCD.getRowNumber(),actionLCD.getText()));
 			} else {
 				w("\t\t\tlcd.clear();\n");
 			}

@@ -38,11 +38,11 @@ public class Switch {
 		off.setName("off");
 
 		// Creating actions
-		Action switchTheLightOn = new Action();
+		ActionSensor switchTheLightOn = new ActionSensor();
 		switchTheLightOn.setActuator(led);
 		switchTheLightOn.setValue(SIGNAL.HIGH);
 
-		Action switchTheLightOff = new Action();
+		ActionSensor switchTheLightOff = new ActionSensor();
 		switchTheLightOff.setActuator(led);
 		switchTheLightOff.setValue(SIGNAL.LOW);
 
@@ -58,8 +58,8 @@ public class Switch {
 		on.setActions(Arrays.asList(switchTheLightOn));
 		off.setActions(Arrays.asList(switchTheLightOff));
 
-		on.setActionLCDS(Arrays.asList(displayText));
-		off.setActionLCDS(Arrays.asList(clearText));
+		on.setActions(Arrays.asList(displayText));
+		off.setActions(Arrays.asList(clearText));
 
 		// Creating transitions
 		Transition on2off = new Transition();
@@ -133,11 +133,11 @@ public class Switch {
 		off.setName("off");
 
 		// Creating actions
-		Action switchTheLightOn = new Action();
+		ActionSensor switchTheLightOn = new ActionSensor();
 		switchTheLightOn.setActuator(led);
 		switchTheLightOn.setValue(SIGNAL.HIGH);
 
-		Action switchTheLightOff = new Action();
+		ActionSensor switchTheLightOff = new ActionSensor();
 		switchTheLightOff.setActuator(led);
 		switchTheLightOff.setValue(SIGNAL.LOW);
 
@@ -153,8 +153,8 @@ public class Switch {
 		on.setActions(Arrays.asList(switchTheLightOn));
 		off.setActions(Arrays.asList(switchTheLightOff));
 
-		on.setActionLCDS(Arrays.asList(displayText));
-		off.setActionLCDS(Arrays.asList(clearText));
+		on.setActions(Arrays.asList(displayText));
+		off.setActions(Arrays.asList(clearText));
 
 		// Creating transitions
 		Transition on2off = new Transition();

@@ -121,8 +121,8 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
 
     @Override
-    public void enterAction(ArduinomlParser.ActionContext ctx) {
-        Action action = new Action();
+    public void enterActionSensor(ArduinomlParser.ActionSensorContext ctx) {
+        ActionSensor action = new ActionSensor();
         action.setActuator(actuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
 
@@ -138,7 +138,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
             if (ctx.rowNumber!=null)
                 actionLCD.setRowNumber(Integer.parseInt(ctx.rowNumber.getText()));
         }
-        currentState.getActionLCDS().add(actionLCD);
+        currentState.getActions().add(actionLCD);
     }
 
 
@@ -203,7 +203,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
         ArduinomlParser.NewActionContext actionContext = ctx.mealy;
         while (actionContext != null){
-            Action action = new Action();
+            ActionSensor action = new ActionSensor();
             action.setActuator(actuators.get(actionContext.receiver.getText()));
             action.setValue(SIGNAL.valueOf(actionContext.value.getText()));
             actions.add(action);
