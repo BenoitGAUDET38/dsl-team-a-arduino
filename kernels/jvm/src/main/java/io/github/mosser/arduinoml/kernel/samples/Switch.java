@@ -22,7 +22,7 @@ public class Switch {
 		button3.setName("button3");
 		button3.setPin(11);
 
-		Actuator led = new Actuator();
+		ActuatorBasic led = new ActuatorBasic();
 		led.setName("LED");
 		led.setPin(12);
 

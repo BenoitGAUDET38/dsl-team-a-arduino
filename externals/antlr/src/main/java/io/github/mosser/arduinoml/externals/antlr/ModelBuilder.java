@@ -5,10 +5,7 @@ import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 
 import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.behavioral.*;
-import io.github.mosser.arduinoml.kernel.structural.Actuator;
-import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD;
-import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
-import io.github.mosser.arduinoml.kernel.structural.Sensor;
+import io.github.mosser.arduinoml.kernel.structural.*;
 import org.antlr.v4.runtime.atn.ActionTransition;
 import org.antlr.v4.runtime.atn.SemanticContext;
 
@@ -91,7 +88,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void enterActuator(ArduinomlParser.ActuatorContext ctx) {
-        Actuator actuator = new Actuator();
+        Actuator actuator = new ActuatorSensor();
         actuator.setName(ctx.location().id.getText());
         actuator.setPin(Integer.parseInt(ctx.location().port.getText()));
         this.theApp.getBricks().add(actuator);

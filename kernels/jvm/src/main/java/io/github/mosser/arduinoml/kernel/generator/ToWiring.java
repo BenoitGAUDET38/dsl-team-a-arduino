@@ -69,7 +69,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
-	public void visit(Actuator actuator) {
+	public void visit(ActuatorBasic actuator) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}
