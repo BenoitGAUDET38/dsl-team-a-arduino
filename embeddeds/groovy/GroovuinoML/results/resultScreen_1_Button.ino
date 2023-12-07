@@ -11,6 +11,8 @@ long button1LastDebounceTime = 0;
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2,3,4,5,6,7,8); // screen [LCD Actuator]
 
+long timerSinceNewState = millis();
+
 void setup(){
   pinMode(9, INPUT);  // button1 [Sensor]
   lcd.begin(16,2); // screen [Actuator]
@@ -30,6 +32,7 @@ void loop() {
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = snooze;
 				lcd.clear();
 			}
@@ -44,6 +47,7 @@ void loop() {
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = none;
 				lcd.clear();
 			}
@@ -58,6 +62,7 @@ void loop() {
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
+				timerSinceNewState = millis();
 				currentState = led;
 				lcd.clear();
 			}

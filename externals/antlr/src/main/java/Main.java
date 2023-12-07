@@ -21,7 +21,6 @@ public class Main {
         CharStream stream = getCharStream(args);
         App theApp = buildModel(stream);
         exportToCode(theApp);
-//        System.out.println("current state: "+theApp.getStates().get(1));
     }
 
     private static CharStream getCharStream(String[] args) throws IOException {
