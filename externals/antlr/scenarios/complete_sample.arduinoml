@@ -1,0 +1,22 @@
+### Sample scenario
+
+application sampleApplication
+
+# Declaring bricks
+sensor buttonOne: 9
+sensor buttonTwo: 10
+actuator led: 11
+actuatorLCD lcd: 1
+
+# Declaring states
+on {
+    led <= HIGH
+    lcd : "Led : ON" <= TRUE
+    after 10000 ms (led <= LOW) => off
+}
+
+-> off {
+    lcd : "Led : OFF" <= TRUE
+    buttonOne is HIGH AND buttonTwo is HIGH AND after 1000 ms => on
+}
+

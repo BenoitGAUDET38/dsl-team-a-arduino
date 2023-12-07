@@ -37,6 +37,8 @@ void loop() {
 			}
 		break;
 		case off:
+			lcd.setCursor(0,0);
+			lcd.print("Led : OFF");
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();

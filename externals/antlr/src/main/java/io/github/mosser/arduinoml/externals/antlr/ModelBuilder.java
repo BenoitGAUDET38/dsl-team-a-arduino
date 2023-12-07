@@ -62,6 +62,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
                 Transition t = new Transition();
                 t.setNext(states.get(binding.to));
                 t.setCondition(binding.condition);
+                t.setActions(binding.actions);
                 states.get(key).addTransition(t);
             }
         });
@@ -199,9 +200,24 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
         ArduinomlParser.NewActionContext actionContext = ctx.mealy;
         while (actionContext != null){
-            ActionSensor action = new ActionSensor();
-            action.setActuator(basicActuators.get(actionContext.receiver.getText()));
-            action.setValue(SIGNAL.valueOf(actionContext.value.getText()));
+            Action action;
+            if (actionContext.receiverSensor!=null) {
+                ActionSensor actionSensor = new ActionSensor();
+                actionSensor.setActuator(basicActuators.get(actionContext.receiverSensor.getText()));
+                actionSensor.setValue(SIGNAL.valueOf(actionContext.value.getText()));
+                action = actionSensor;
+            }
+            else {
+                ActionLCD actionLCD = new ActionLCD();
+                actionLCD.setActuatorLCD(actuatorBus);
+                actionLCD.setDisplayText(actionContext.isDisplayed.getText().equals("TRUE"));
+                if (actionContext.isDisplayed.getText().equals("TRUE")){
+                    actionLCD.setText(actionContext.text.getText().substring(1,actionContext.text.getText().length()-1));
+                    if (actionContext.rowNumber!=null)
+                        actionLCD.setRowNumber(Integer.parseInt(actionContext.rowNumber.getText()));
+                }
+                action = actionLCD;
+            }
             actions.add(action);
             actionContext = actionContext.mealy;
         }

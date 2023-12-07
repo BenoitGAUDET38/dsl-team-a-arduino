@@ -35,18 +35,22 @@ void loop() {
 			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
 			if (digitalRead(8) == HIGH && buttonOneBounceGuard) {
 				buttonOneLastDebounceTime = millis();
+				digitalWrite(11,HIGH);
 				timerSinceNewState = millis();
 				currentState = error;
 			}
 			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && buttonTwoBounceGuard) {
 				buttonTwoLastDebounceTime = millis();
+				digitalWrite(12,HIGH);
 				timerSinceNewState = millis();
 				currentState = error;
 			}
 			buttonThreeBounceGuard = millis() - buttonThreeLastDebounceTime > debounce;
 			if (digitalRead(10) == HIGH && buttonThreeBounceGuard) {
 				buttonThreeLastDebounceTime = millis();
+				digitalWrite(11,HIGH);
+				digitalWrite(12,HIGH);
 				timerSinceNewState = millis();
 				currentState = error;
 			}

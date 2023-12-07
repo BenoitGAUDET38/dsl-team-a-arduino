@@ -3,7 +3,7 @@
 ## But he also wants to be able to turn it off by pressing the button again before the one-minute timer.
 ## To avoid spamming the button, he also has to wait 5 seconds each time before the click is taken into account.
 
-application simpleAlarm
+application temporalTransition
 
 # Declaring bricks
 sensor button: 9

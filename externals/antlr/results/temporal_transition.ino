@@ -1,5 +1,5 @@
 // Wiring code generated from an ArduinoML model
-// Application name: simpleAlarm
+// Application name: temporalTransition
 
 long debounce = 200;
 
