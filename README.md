@@ -58,9 +58,9 @@ WS                  : ((' ' | '\t')+)           -> skip;     // who cares about 
 COMMENT             : '#' ~( '\r' | '\n' )*     -> skip;     // Single line comments, starting with a #
 ```
 ### Table of symbols
-| Usage  | Notation |
-|:------:|:--------:|
-| `truc` |   truc   |
+| Usage | Notation |
+|:-----:|:--------:|
+|       |          |
 ### Script example
 ```java
 application sampleApplication
