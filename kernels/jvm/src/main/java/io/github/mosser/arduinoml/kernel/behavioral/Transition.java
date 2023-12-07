@@ -50,8 +50,9 @@ public class Transition implements Visitable {
 	@Override
 	public String toString() {
 		return "Transition{" +
-				"next=" + next.getName() +
-				", actions=" + actions +
+				"next=" + next.toString() +
+				"\ncondition=" + condition +
+				"\nactions=" + actions +
 				'}';
 	}
 }

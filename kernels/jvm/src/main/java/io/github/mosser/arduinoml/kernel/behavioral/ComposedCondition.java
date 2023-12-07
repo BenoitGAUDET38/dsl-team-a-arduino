@@ -34,4 +34,13 @@ public class ComposedCondition extends Condition{
     public void setOperator(OPERATOR operator) {
         this.operator = operator;
     }
+
+    @Override
+    public String toString() {
+        return "ComposedCondition{" +
+                "left=" + left +
+                ", right=" + right +
+                ", operator=" + operator +
+                '}';
+    }
 }

@@ -28,23 +28,22 @@ public class GroovuinoMLModel {
 		sensor.setPin(pinNumber);
 		this.bricks.add(sensor);
 		this.binding.setVariable(name, sensor);
-//		System.out.println("> sensor " + name + " on pin " + pinNumber);
 	}
 	
-	public void createActuator(String name, Integer pinNumber) {
-		Actuator actuator = new Actuator();
-		actuator.setName(name);
-		actuator.setPin(pinNumber);
-		this.bricks.add(actuator);
-		this.binding.setVariable(name, actuator);
+	public void createActuatorPin(String name, Integer pinNumber) {
+		ActuatorPin actuatorPin = new ActuatorPin();
+		actuatorPin.setName(name);
+		actuatorPin.setPin(pinNumber);
+		this.bricks.add(actuatorPin);
+		this.binding.setVariable(name, actuatorPin);
 	}
 
-	public void createActuatorLCD(String name, Integer busNumber) {
-		ActuatorLCD actuatorLCD = new ActuatorLCD();
-		actuatorLCD.setName(name);
-		actuatorLCD.setBus(busNumber);
-		this.bricks.add(actuatorLCD);
-		this.binding.setVariable(name, actuatorLCD);
+	public void createActuatorBus(String name, Integer busNumber) {
+		ActuatorBus actuatorBus = new ActuatorBus();
+		actuatorBus.setName(name);
+		actuatorBus.setBus(busNumber);
+		this.bricks.add(actuatorBus);
+		this.binding.setVariable(name, actuatorBus);
 	}
 	
 	public void createState(String name, List<Action> actions) {
@@ -55,10 +54,14 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, state);
 	}
 	
-	public void createTransition(State from, State to, List<Condition> conditions, List<Action> actions) {
+	public void createTransition(State from, State to, ComposedCondition condition, List<Action> actions) {
 		Transition transition = new Transition();
 		transition.setNext(to);
-		transition.setConditions(conditions);
+		if (condition.getRight() == null) {
+			transition.setCondition(condition.getLeft());
+		} else {
+			transition.setCondition(condition);
+		}
 		transition.setActions(actions);
 		from.addTransition(transition);
 	}
@@ -74,6 +77,7 @@ public class GroovuinoMLModel {
 		app.setBricks(this.bricks);
 		app.setStates(this.states);
 		app.setInitial(this.initialState);
+		System.out.println(app.toString());
 		Visitor codeGenerator = new ToWiring();
 		app.accept(codeGenerator);
 		

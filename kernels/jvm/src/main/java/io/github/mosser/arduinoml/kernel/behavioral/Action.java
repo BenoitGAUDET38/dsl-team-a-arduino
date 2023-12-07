@@ -8,11 +8,6 @@ import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 public abstract class Action implements Visitable {
 
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
-
-	@Override
 	public String toString() {
 		return "Action{" +
 				'}';

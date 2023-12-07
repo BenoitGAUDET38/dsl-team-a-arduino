@@ -208,16 +208,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 
-	@Override
-	public void visit(Action action) {
-        if (action instanceof ActionSensor) {
-            visit((ActionSensor) action);
-        } else if (action instanceof ActionLCD) {
-			visit((ActionLCD) action);
-		}
-	}
 
-	private void visit(ActionSensor actionSensor) {
+
+	@Override
+	public void visit(ActionSensor actionSensor) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}
@@ -229,7 +223,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 	}
 
-	private void visit(ActionLCD actionLCD) {
+	@Override
+	public void visit(ActionLCD actionLCD) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}
