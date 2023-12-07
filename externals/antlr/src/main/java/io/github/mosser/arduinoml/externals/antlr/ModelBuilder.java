@@ -5,10 +5,7 @@ import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 
 import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.behavioral.*;
-import io.github.mosser.arduinoml.kernel.structural.Actuator;
-import io.github.mosser.arduinoml.kernel.structural.ActuatorLCD;
-import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
-import io.github.mosser.arduinoml.kernel.structural.Sensor;
+import io.github.mosser.arduinoml.kernel.structural.*;
 import org.antlr.v4.runtime.atn.ActionTransition;
 import org.antlr.v4.runtime.atn.SemanticContext;
 
@@ -91,7 +88,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void enterActuator(ArduinomlParser.ActuatorContext ctx) {
-        Actuator actuator = new Actuator();
+        Actuator actuator = new ActuatorSensor();
         actuator.setName(ctx.location().id.getText());
         actuator.setPin(Integer.parseInt(ctx.location().port.getText()));
         this.theApp.getBricks().add(actuator);
@@ -155,17 +152,17 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
         Condition firstCondition;
 
-            if (ctx.time!=null){
-                ConditionDelay condition= new ConditionDelay();
-                condition.setDelay(Integer.parseInt(ctx.time.getText()));
-                firstCondition = condition;
-            }
-            else{
-                ConditionSensor condition= new ConditionSensor();
-                condition.setSensor(sensors.get(ctx.trigger.getText()));
-                condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
-                firstCondition = condition;
-            }
+        if (ctx.time!=null){
+            ConditionDelay condition= new ConditionDelay();
+            condition.setDelay(Integer.parseInt(ctx.time.getText()));
+            firstCondition = condition;
+        }
+        else{
+            ConditionSensor condition= new ConditionSensor();
+            condition.setSensor(sensors.get(ctx.trigger.getText()));
+            condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
+            firstCondition = condition;
+        }
 
         ArduinomlParser.ConditionContext conditionContext= ctx.more;
 
@@ -178,9 +175,9 @@ public class ModelBuilder extends ArduinomlBaseListener {
             while(conditionContext!=null){
                 Condition conditionToAdd;
                 conditionComposed.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
-                if (ctx.time!=null){
+                if (conditionContext.time!=null){
                     ConditionDelay condition = new ConditionDelay();
-                    condition.setDelay(Integer.parseInt(ctx.time.getText()));
+                    condition.setDelay(Integer.parseInt(conditionContext.time.getText()));
                     conditionToAdd = condition;
                 }
                 else{

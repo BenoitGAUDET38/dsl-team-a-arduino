@@ -2,11 +2,12 @@ package io.github.mosser.arduinoml.kernel.behavioral;
 
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.Actuator;
+import io.github.mosser.arduinoml.kernel.structural.ActuatorBasic;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 
 public class ActionSensor extends Action {
     private SIGNAL value;
-    private Actuator actuator;
+    private ActuatorBasic actuator;
 
     public SIGNAL getValue() {
         return value;
@@ -22,11 +23,11 @@ public class ActionSensor extends Action {
         this.value = value;
     }
 
-    public Actuator getActuator() {
+    public ActuatorBasic getActuator() {
         return actuator;
     }
 
-    public void setActuator(Actuator actuator) {
+    public void setActuator(ActuatorBasic actuator) {
         this.actuator = actuator;
     }
 

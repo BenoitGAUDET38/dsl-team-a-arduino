@@ -1,8 +1,6 @@
-### Basic scenario
-## State-based alarm: Pushing the button once switches the screen on with a Hello World message.
-## Pushing it again switches it off.
+### Extension scenario
 
-application screenHelloWorld
+application LCD_1_Button
 
 # Declaring bricks
 sensor button: 9
