@@ -47,11 +47,10 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, actuatorLCD);
 	}
 	
-	public void createState(String name, List<Action> actions, List<ActionLCD> actionLCDS) {
+	public void createState(String name, List<Action> actions) {
 		State state = new State();
 		state.setName(name);
 		state.setActions(actions);
-		state.setActionLCDS(actionLCDS);
 		this.states.add(state);
 		this.binding.setVariable(name, state);
 	}

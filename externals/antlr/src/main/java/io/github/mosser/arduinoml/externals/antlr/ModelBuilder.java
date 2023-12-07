@@ -138,7 +138,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
             if (ctx.rowNumber!=null)
                 actionLCD.setRowNumber(Integer.parseInt(ctx.rowNumber.getText()));
         }
-        currentState.getActionLCDS().add(actionLCD);
+        currentState.getActions().add(actionLCD);
     }
 
 

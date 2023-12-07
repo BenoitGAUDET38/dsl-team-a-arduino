@@ -58,8 +58,8 @@ public class Switch {
 		on.setActions(Arrays.asList(switchTheLightOn));
 		off.setActions(Arrays.asList(switchTheLightOff));
 
-		on.setActionLCDS(Arrays.asList(displayText));
-		off.setActionLCDS(Arrays.asList(clearText));
+		on.setActions(Arrays.asList(displayText));
+		off.setActions(Arrays.asList(clearText));
 
 		// Creating transitions
 		Transition on2off = new Transition();
@@ -149,8 +149,8 @@ public class Switch {
 		on.setActions(Arrays.asList(switchTheLightOn));
 		off.setActions(Arrays.asList(switchTheLightOff));
 
-		on.setActionLCDS(Arrays.asList(displayText));
-		off.setActionLCDS(Arrays.asList(clearText));
+		on.setActions(Arrays.asList(displayText));
+		off.setActions(Arrays.asList(clearText));
 
 		// Creating transitions
 		Transition on2off = new Transition();

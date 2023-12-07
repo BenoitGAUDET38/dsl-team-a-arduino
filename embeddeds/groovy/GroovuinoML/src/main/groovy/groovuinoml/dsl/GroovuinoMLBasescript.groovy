@@ -34,8 +34,7 @@ abstract class GroovuinoMLBasescript extends Script {
 	// state "name" means actuator becomes signal [and actuator becomes signal]*n
 	def state(String name) {
 		List<Action> actions = new ArrayList<Action>()
-		List<ActionLCD> actionLCDS = new ArrayList<ActionLCD>()
-		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions, actionLCDS)
+		((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().createState(name, actions)
 		// recursive closure to allow multiple and statements
 		def closure
 
@@ -55,7 +54,7 @@ abstract class GroovuinoMLBasescript extends Script {
 					actionLCD.setDisplayText(true)
 					actionLCD.setText(text)
 					actionLCD.setRowNumber(rowNumber)
-					actionLCDS.add(actionLCD)
+					actions.add(actionLCD)
 					[and: closure]
 				}]
 			}
@@ -120,7 +119,7 @@ abstract class GroovuinoMLBasescript extends Script {
 					actionLCD.setDisplayText(true)
 					actionLCD.setText(text)
 					actionLCD.setRowNumber(rowNumber)
-					actionLCDS.add(actionLCD)
+					actions.add(actionLCD)
 					[and: withClosure]
 				}]
 			}

@@ -122,10 +122,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 				action.accept(this);
 			}
 
-			for (ActionLCD actionLCD : state.getActionLCDS()) {
-				actionLCD.accept(this);
-			}
-
 			if (state.getTransitions() != null) {
 				for(Transition transition : state.getTransitions()) {
 					transition.accept(this);
