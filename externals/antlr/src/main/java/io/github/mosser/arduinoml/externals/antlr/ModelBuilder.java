@@ -152,17 +152,17 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
         Condition firstCondition;
 
-            if (ctx.time!=null){
-                ConditionDelay condition= new ConditionDelay();
-                condition.setDelay(Integer.parseInt(ctx.time.getText()));
-                firstCondition = condition;
-            }
-            else{
-                ConditionSensor condition= new ConditionSensor();
-                condition.setSensor(sensors.get(ctx.trigger.getText()));
-                condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
-                firstCondition = condition;
-            }
+        if (ctx.time!=null){
+            ConditionDelay condition= new ConditionDelay();
+            condition.setDelay(Integer.parseInt(ctx.time.getText()));
+            firstCondition = condition;
+        }
+        else{
+            ConditionSensor condition= new ConditionSensor();
+            condition.setSensor(sensors.get(ctx.trigger.getText()));
+            condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
+            firstCondition = condition;
+        }
 
         ArduinomlParser.ConditionContext conditionContext= ctx.more;
 
@@ -175,9 +175,9 @@ public class ModelBuilder extends ArduinomlBaseListener {
             while(conditionContext!=null){
                 Condition conditionToAdd;
                 conditionComposed.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
-                if (ctx.time!=null){
+                if (conditionContext.time!=null){
                     ConditionDelay condition = new ConditionDelay();
-                    condition.setDelay(Integer.parseInt(ctx.time.getText()));
+                    condition.setDelay(Integer.parseInt(conditionContext.time.getText()));
                     conditionToAdd = condition;
                 }
                 else{

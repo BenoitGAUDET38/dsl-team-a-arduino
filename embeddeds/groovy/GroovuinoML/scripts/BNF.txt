@@ -1,0 +1,30 @@
+Brick =
+    ('sensor' | 'actuator' String 'pin' Int) | ('actuatorLCD' String 'bus' Int);
+State =
+    'state' String ['means' Action {'and' Action}];
+    'initial' String;
+Action =
+    String (('becomes' Signal) | ('display' String 'row' Int));
+Signal =
+    'high' | 'low';
+Transition =
+    'from' String 'to' String (TemporalCondition ['with' Action {'and' Action}] | 'when' Condition {RecursiveCond} [TemporalCondition {RecursiveCond}] ['with' Action {'and' Action}]);
+Condition =
+    String 'becomes' Signal;
+RecursiveCond =
+    ('and' | 'or') Condition;
+TemporalCondition =
+    'after' Int ('ms' | 's' | 'min');
+Application =
+    (Brick)+;
+    (State)+;
+    {Transition};
+    'export' String;
+
+ = -> definition
+ ; -> termination
+ | -> alternation
+ (...) -> grouping
+ (...)+ -> at least one repetition (one or more)
+ [...] -> optional (none or once)
+ {...} -> repetition (none or more)

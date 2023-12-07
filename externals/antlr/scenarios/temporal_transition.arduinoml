@@ -1,0 +1,23 @@
+### Extension scenario
+## To reduce his electricity consumption, Thomas wants his light to switch off automatically after one minute.
+## But he also wants to be able to turn it off by pressing the button again before the one-minute timer.
+## To avoid spamming the button, he also has to wait 5 seconds each time before the click is taken into account.
+
+application simpleAlarm
+
+# Declaring bricks
+sensor button: 9
+actuator led: 11
+
+# Declaring states
+on {
+    led <= HIGH
+    button is HIGH AND after 5000 ms => off
+    after 60000 ms => off
+}
+
+-> off {
+    led <= LOW
+    button is HIGH AND after 5000 ms => on
+}
+
