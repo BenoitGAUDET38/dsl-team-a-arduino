@@ -116,7 +116,7 @@ abstract class GroovuinoMLBasescript extends Script {
 			def lcd = { text ->
 				[row: { rowNumber ->
 					ActionLCD actionLCD = new ActionLCD()
-					actionLCD.setActuatorLCD(actuatorLCD instanceof String ? (ActuatorBus)((GroovuinoMLBinding)this.getBinding()).getVariable(actuatorLCD) : (ActuatorBus)actuatorLCD)
+					actionLCD.setActuatorLCD(actuator instanceof String ? (ActuatorBus)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorBus)actuator)
 					actionLCD.setDisplayText(true)
 					actionLCD.setText(text)
 					actionLCD.setRowNumber(rowNumber)

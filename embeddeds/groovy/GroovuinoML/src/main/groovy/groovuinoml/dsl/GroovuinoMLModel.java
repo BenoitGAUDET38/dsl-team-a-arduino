@@ -77,6 +77,7 @@ public class GroovuinoMLModel {
 		app.setBricks(this.bricks);
 		app.setStates(this.states);
 		app.setInitial(this.initialState);
+		System.out.println(app.toString());
 		Visitor codeGenerator = new ToWiring();
 		app.accept(codeGenerator);
 		
