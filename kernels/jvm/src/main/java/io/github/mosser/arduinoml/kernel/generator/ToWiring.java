@@ -46,7 +46,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		for(Brick brick: app.getBricks()){
 			brick.accept(this);
 		}
-		withLCD=app.getBricks().stream().anyMatch(brick -> brick instanceof ActuatorLCD);
+		withLCD=app.getBricks().stream().anyMatch(brick -> brick instanceof ActuatorBus);
 
 		//time since last state change
 		w("\nlong timerSinceNewState = millis();\n");
@@ -69,7 +69,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
-	public void visit(ActuatorBasic actuator) {
+	public void visit(ActuatorPin actuator) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}
@@ -79,22 +79,22 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
-	public void visit(ActuatorLCD actuatorLCD) {
+	public void visit(ActuatorBus actuatorBus) {
 		if(context.get("pass") == PASS.ONE) {
 			w("#include <LiquidCrystal.h>\n");
-			switch (actuatorLCD.getBus()) {
+			switch (actuatorBus.getBus()) {
 				case 1:
-					w(String.format("LiquidCrystal lcd(2,3,4,5,6,7,8); // %s [LCD Actuator]\n", actuatorLCD.getName()));
+					w(String.format("LiquidCrystal lcd(2,3,4,5,6,7,8); // %s [LCD Actuator]\n", actuatorBus.getName()));
 					break;
 				case 2:
-					w(String.format("LiquidCrystal lcd(10,11,12,13,14,15,16); // %s [LCD Actuator]\n", actuatorLCD.getName()));
+					w(String.format("LiquidCrystal lcd(10,11,12,13,14,15,16); // %s [LCD Actuator]\n", actuatorBus.getName()));
 					break;
 				default:
 					break;
 			}
 		}
 		if(context.get("pass") == PASS.TWO) {
-			w(String.format("  lcd.begin(16,2); // %s [Actuator]\n", actuatorLCD.getName()));
+			w(String.format("  lcd.begin(16,2); // %s [Actuator]\n", actuatorBus.getName()));
 		}
 	}
 
