@@ -6,8 +6,6 @@ import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.structural.*;
-import org.antlr.v4.runtime.atn.ActionTransition;
-import org.antlr.v4.runtime.atn.SemanticContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,8 +31,8 @@ public class ModelBuilder extends ArduinomlBaseListener {
      *******************/
 
     private Map<String, Sensor>   sensors   = new HashMap<>();
-    private Map<String, Actuator> actuators = new HashMap<>();
-    private ActuatorLCD actuatorLCD;
+    private Map<String, ActuatorPin> basicActuators = new HashMap<>();
+    private ActuatorBus actuatorBus;
     private Map<String, State>    states  = new HashMap<>();
     private Map<String, List<Binding>>  bindings  = new HashMap<>();
 
@@ -56,7 +54,8 @@ public class ModelBuilder extends ArduinomlBaseListener {
         theApp = new App();
     }
 
-    @Override public void exitRoot(ArduinomlParser.RootContext ctx) {
+    @Override
+    public void exitRoot(ArduinomlParser.RootContext ctx) {
         // Resolving states in transitions
         bindings.forEach((key, bindings) ->  {
             for (Binding binding : bindings){
@@ -88,18 +87,18 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void enterActuator(ArduinomlParser.ActuatorContext ctx) {
-        Actuator actuator = new ActuatorBasic();
+        ActuatorPin actuator = new ActuatorPin();
         actuator.setName(ctx.location().id.getText());
         actuator.setPin(Integer.parseInt(ctx.location().port.getText()));
         this.theApp.getBricks().add(actuator);
-        actuators.put(actuator.getName(), actuator);
+        basicActuators.put(actuator.getName(), actuator);
     }
     @Override
     public void enterActuatorLCD(ArduinomlParser.ActuatorLCDContext ctx) {
-        this.actuatorLCD = new ActuatorLCD();
-        actuatorLCD.setName(ctx.location().id.getText());
-        actuatorLCD.setBus(Integer.parseInt(ctx.location().port.getText()));
-        this.theApp.getBricks().add(actuatorLCD);
+        this.actuatorBus = new ActuatorBus();
+        actuatorBus.setName(ctx.location().id.getText());
+        actuatorBus.setBus(Integer.parseInt(ctx.location().port.getText()));
+        this.theApp.getBricks().add(actuatorBus);
     }
 
 
@@ -120,7 +119,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterActionSensor(ArduinomlParser.ActionSensorContext ctx) {
         ActionSensor action = new ActionSensor();
-        action.setActuator(actuators.get(ctx.receiver.getText()));
+        action.setActuator(basicActuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
 
         currentState.getActions().add(action);
@@ -128,7 +127,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterActionLCD(ArduinomlParser.ActionLCDContext ctx) {
         ActionLCD actionLCD = new ActionLCD();
-        actionLCD.setActuatorLCD(actuatorLCD);
+        actionLCD.setActuatorLCD(actuatorBus);
         actionLCD.setDisplayText(ctx.isDisplayed.getText().equals("TRUE"));
         if (ctx.isDisplayed.getText().equals("TRUE")){
             actionLCD.setText(ctx.text.getText().substring(1,ctx.text.getText().length()-1));
@@ -201,7 +200,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
         ArduinomlParser.NewActionContext actionContext = ctx.mealy;
         while (actionContext != null){
             ActionSensor action = new ActionSensor();
-            action.setActuator(actuators.get(actionContext.receiver.getText()));
+            action.setActuator(basicActuators.get(actionContext.receiver.getText()));
             action.setValue(SIGNAL.valueOf(actionContext.value.getText()));
             actions.add(action);
             actionContext = actionContext.mealy;
