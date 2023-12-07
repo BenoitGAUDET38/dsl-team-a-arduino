@@ -1,6 +1,6 @@
 package io.github.mosser.arduinoml.kernel.behavioral;
 
-public class ConditionDelay extends Condition {
+public class ConditionDelay extends SimpleCondition {
     private int delay;
 
     public int getDelay() {

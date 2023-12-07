@@ -11,7 +11,7 @@ import io.github.mosser.arduinoml.kernel.structural.Sensor;
 import java.util.Arrays;
 
 public class MealyMachineSample {
-
+/**
 	public static void main(String[] args) {
 
 		// Declaring elementary bricks
@@ -102,6 +102,6 @@ public class MealyMachineSample {
 
 		// Printing the generated code on the console
 		System.out.println(codeGenerator.getResult());
-	}
+	}**/
 
 }

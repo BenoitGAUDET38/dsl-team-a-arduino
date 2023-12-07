@@ -67,24 +67,28 @@ public class Switch {
 		ConditionSensor cond1 = new ConditionSensor();
 		cond1.setSensor(button);
 		cond1.setValue(SIGNAL.HIGH);
-		cond1.setOperator(OPERATOR.EMPTY);
 		ConditionSensor cond2 = new ConditionSensor();
 		cond2.setSensor(button2);
 		cond2.setValue(SIGNAL.HIGH);
-		cond2.setOperator(OPERATOR.AND);
 		ConditionSensor cond4 = new ConditionSensor();
 		cond4.setSensor(button3);
 		cond4.setValue(SIGNAL.HIGH);
-		cond4.setOperator(OPERATOR.OR);
-		on2off.setConditions(Arrays.asList(cond1, cond2, cond4));
+		ComposedCondition composedCondition= new ComposedCondition();
+		composedCondition.setOperator(OPERATOR.OR);
+		composedCondition.setLeft(cond1);
+		composedCondition.setRight(cond2);
+		ComposedCondition composedCondition2= new ComposedCondition();
+		composedCondition2.setOperator(OPERATOR.AND);
+		composedCondition2.setLeft(composedCondition);
+		composedCondition2.setRight(cond4);
+		on2off.setCondition(composedCondition2);
 
 		Transition off2on = new Transition();
 		off2on.setNext(on);
 		ConditionSensor cond3 = new ConditionSensor();
 		cond3.setSensor(button);
 		cond3.setValue(SIGNAL.HIGH);
-		cond3.setOperator(OPERATOR.EMPTY);
-		off2on.setConditions(Arrays.asList(cond3));
+		off2on.setCondition(cond3);
 
 		// Binding transitions to states
 		on.setTransitions(Arrays.asList(on2off));
@@ -107,7 +111,7 @@ public class Switch {
 
 
 
-	public static void scenario2(){
+	/**public static void scenario2(){
 		// Declaring elementary bricks
 		Sensor button = new Sensor();
 		button.setName("button");
@@ -187,12 +191,12 @@ public class Switch {
 
 		// Printing the generated code on the console
 		System.out.println(codeGenerator.getResult());
-	}
+	}**/
 
 
 
 	public static void main(String[] args) {
-		scenario2();
+		scenario1();
 
 	}
 

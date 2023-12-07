@@ -12,10 +12,17 @@ public class Transition implements Visitable {
 	private State next;
 
 
-	private List<Condition> conditions = new ArrayList<>();
+	private Condition condition;
 
 	private List<Action> actions = new ArrayList<>();
 
+	public Condition getCondition() {
+		return condition;
+	}
+
+	public void setCondition(Condition condition) {
+		this.condition = condition;
+	}
 
 	public State getNext() {
 		return next;
@@ -25,13 +32,6 @@ public class Transition implements Visitable {
 		this.next = next;
 	}
 
-	public List<Condition> getConditions() {
-		return conditions;
-	}
-
-	public void setConditions(List<Condition> conditions) {
-		this.conditions = conditions;
-	}
 
 	public List<Action> getActions() {
 		return actions;
@@ -51,7 +51,6 @@ public class Transition implements Visitable {
 	public String toString() {
 		return "Transition{" +
 				"next=" + next.getName() +
-				", conditions=" + conditions +
 				", actions=" + actions +
 				'}';
 	}

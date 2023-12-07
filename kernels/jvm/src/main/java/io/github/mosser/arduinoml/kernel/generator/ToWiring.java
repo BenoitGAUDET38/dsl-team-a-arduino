@@ -143,23 +143,15 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 		if(context.get("pass") == PASS.TWO) {
 			context.put("cond_pass", COND_PASS.ONE);
-			for (Condition condition: transition.getConditions()) {
-				condition.accept(this);
-			}
+			transition.getCondition().accept(this);
 			w(String.format("\t\t\tif ("));
 			context.put("cond_pass", COND_PASS.TWO);
-			for (Condition condition: transition.getConditions()) {
-				condition.accept(this);
-			}
+			transition.getCondition().accept(this);
 			context.put("cond_pass", COND_PASS.THREE);
-			for (Condition condition: transition.getConditions()) {
-				condition.accept(this);
-			}
+			transition.getCondition().accept(this);
 			w(String.format(") {\n"));
 			context.put("cond_pass", COND_PASS.FOUR);
-			for (Condition condition: transition.getConditions()) {
-				condition.accept(this);
-			}
+			transition.getCondition().accept(this);
 			context.put("pass", PASS.THREE);
 			for (Action action : transition.getActions()) {
 				action.accept(this);
@@ -175,7 +167,20 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
-	public void visit(Condition condition) {
+	public void visit(ComposedCondition condition) {
+		condition.getLeft().accept(this);
+		if(context.get("cond_pass") == COND_PASS.TWO) {
+			if (condition.getOperator() == OPERATOR.AND) {
+				w(" && ");
+			} else if (condition.getOperator() == OPERATOR.OR) {
+				w(" || ");
+			}
+		}
+		condition.getRight().accept(this);
+	}
+
+	@Override
+	public void visit(SimpleCondition condition) {
 		if(context.get("cond_pass") == COND_PASS.ONE && condition instanceof ConditionSensor) {
 			ConditionSensor conditionSensor = (ConditionSensor) condition;
 			String sensorName = conditionSensor.getSensor().getName();
@@ -192,15 +197,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				ConditionDelay conditionDelay = (ConditionDelay) condition;
 				stringToAdd=String.format("millis() - timerSinceNewState > %d", conditionDelay.getDelay());
 			}
-			if(condition.getOperator() == OPERATOR.EMPTY) {
-				w(stringToAdd);
-			}
-			else if (condition.getOperator() == OPERATOR.AND) {
-				w(String.format(" && %s", stringToAdd));
-			}
-			else if (condition.getOperator() == OPERATOR.OR) {
-				w(String.format(" || %s", stringToAdd));
-			}
+			w(stringToAdd);
 		}
 		if(context.get("cond_pass") == COND_PASS.THREE  && condition instanceof ConditionSensor ) {
 			ConditionSensor conditionSensor = (ConditionSensor) condition;
@@ -213,6 +210,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 			w(String.format("\t\t\t\t%sLastDebounceTime = millis();\n", sensorName));
 		}
 	}
+
 
 	@Override
 	public void visit(Action action) {

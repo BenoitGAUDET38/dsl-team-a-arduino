@@ -43,7 +43,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     private class Binding { // used to support state resolution for transitions
         String to;
-        List<Condition> conditions;
+        Condition condition;
         List<Action> actions;
     }
 
@@ -65,7 +65,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
             for (Binding binding : bindings){
                 Transition t = new Transition();
                 t.setNext(states.get(binding.to));
-                t.setConditions(binding.conditions);
+                t.setCondition(binding.condition);
                 states.get(key).addTransition(t);
             }
         });
@@ -147,50 +147,59 @@ public class ModelBuilder extends ArduinomlBaseListener {
     public void enterTransition(ArduinomlParser.TransitionContext ctx) {
         // Creating a placeholder as the next state might not have been compiled yet.
         Binding toBeResolvedLater = new Binding();
-        List<Condition> conditions = new ArrayList<>();
         List<Action> actions = new ArrayList<>();
 
         toBeResolvedLater.to = ctx.next.getText();
-        toBeResolvedLater.conditions = conditions;
         toBeResolvedLater.actions = actions;
 
-        if (ctx.time!=null){
-            ConditionDelay condition= new ConditionDelay();
-            condition.setOperator(OPERATOR.EMPTY);
-            condition.setDelay(Integer.parseInt(ctx.time.getText()));
-            conditions.add(condition);
-        }
-        else{
-            ConditionSensor condition= new ConditionSensor();
-            condition.setOperator(OPERATOR.EMPTY);
-            condition.setSensor(sensors.get(ctx.trigger.getText()));
-            condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
-            conditions.add(condition);
-        }
 
+        Condition firstCondition;
 
-        ArduinomlParser.ConditionContext conditionContext= ctx.more;
-
-        while(conditionContext!=null){
-            Condition conditionToAdd;
             if (ctx.time!=null){
                 ConditionDelay condition= new ConditionDelay();
-                condition.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
                 condition.setDelay(Integer.parseInt(ctx.time.getText()));
-                conditions.add(condition);
-                conditionToAdd=condition;
+                firstCondition = condition;
             }
             else{
                 ConditionSensor condition= new ConditionSensor();
-                condition.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
-                condition.setSensor(sensors.get(conditionContext.trigger.getText()));
-                condition.setValue(SIGNAL.valueOf(conditionContext.value.getText()));
-                conditions.add(condition);
-                conditionToAdd=condition;
+                condition.setSensor(sensors.get(ctx.trigger.getText()));
+                condition.setValue(SIGNAL.valueOf(ctx.value.getText()));
+                firstCondition = condition;
             }
-            conditions.add(conditionToAdd);
-            conditionContext=conditionContext.more;
+
+        ArduinomlParser.ConditionContext conditionContext= ctx.more;
+
+        if (conditionContext==null)
+            toBeResolvedLater.condition = firstCondition;
+        else{
+            ComposedCondition conditionComposed = new ComposedCondition();
+            toBeResolvedLater.condition = conditionComposed;
+            conditionComposed.setLeft(firstCondition);
+            while(conditionContext!=null){
+                Condition conditionToAdd;
+                conditionComposed.setOperator(OPERATOR.valueOf(conditionContext.operator.getText()));
+                if (ctx.time!=null){
+                    ConditionDelay condition = new ConditionDelay();
+                    condition.setDelay(Integer.parseInt(ctx.time.getText()));
+                    conditionToAdd = condition;
+                }
+                else{
+                    ConditionSensor condition= new ConditionSensor();
+                    condition.setSensor(sensors.get(conditionContext.trigger.getText()));
+                    condition.setValue(SIGNAL.valueOf(conditionContext.value.getText()));
+                    conditionToAdd=condition;
+                }
+                conditionContext=conditionContext.more;
+                if (conditionContext!=null){
+                    conditionComposed.setRight(new ComposedCondition());
+                    conditionComposed= (ComposedCondition) conditionComposed.getRight();
+                    conditionComposed.setLeft(conditionToAdd);
+                }
+                else
+                    conditionComposed.setRight(conditionToAdd);
+            }
         }
+
 
         ArduinomlParser.NewActionContext actionContext = ctx.mealy;
         while (actionContext != null){

@@ -4,11 +4,9 @@ import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
 
-public class ConditionSensor extends Condition{
+public class ConditionSensor extends SimpleCondition{
     private Sensor sensor;
     private SIGNAL value;
-
-    private OPERATOR operator;
 
 
     public Sensor getSensor() {
@@ -27,14 +25,6 @@ public class ConditionSensor extends Condition{
         this.value = value;
     }
 
-    public OPERATOR getOperator() {
-        return operator;
-    }
-
-    public void setOperator(OPERATOR operator) {
-        this.operator = operator;
-    }
-
 
 
     @Override
@@ -47,7 +37,6 @@ public class ConditionSensor extends Condition{
         return "Condition{" +
                 "sensor=" + sensor +
                 ", value=" + value +
-                ", operator=" + operator +
                 '}';
     }
 }
