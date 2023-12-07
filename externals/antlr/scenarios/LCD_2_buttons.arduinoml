@@ -2,7 +2,7 @@
 ## Léo wants to see the digital status of his LED and buzzer on an LCD screen.
 ## He can activate and deactivate each actuator with a dedicated button.
 
-application LCD_2_buttons
+application lcdTwoButtons
 
 # Declaring bricks
 sensor buttonLed: 9

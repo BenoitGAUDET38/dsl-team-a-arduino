@@ -4,7 +4,7 @@
 ## The first transition has actions that switch LED1 on and LED2 off.
 ## The second transition switches LED1 off and LED2 on while the third transition switches both led on.
 
-application mealy_machine_3_buttons
+application mealyMachineThreeButtons
 
 # Declaring bricks
 sensor buttonOne: 8

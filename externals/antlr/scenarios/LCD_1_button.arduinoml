@@ -1,6 +1,6 @@
 ### Extension scenario
 
-application LCD_1_Button
+application lcdOneButton
 
 # Declaring bricks
 sensor button: 9
