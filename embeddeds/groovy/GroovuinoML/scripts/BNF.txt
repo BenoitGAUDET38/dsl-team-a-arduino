@@ -8,7 +8,7 @@ Action =
 Signal =
     'high' | 'low';
 Transition =
-    from' String 'to' String (TemporalCondition ['with' Action {'and' Action}] | 'when' Condition {RecursiveCond} [TemporalCondition {RecursiveCond}] ['with' Action {'and' Action}]);
+    'from' String 'to' String (TemporalCondition ['with' Action {'and' Action}] | 'when' Condition {RecursiveCond} [TemporalCondition {RecursiveCond}] ['with' Action {'and' Action}]);
 Condition =
     String 'becomes' Signal;
 RecursiveCond =

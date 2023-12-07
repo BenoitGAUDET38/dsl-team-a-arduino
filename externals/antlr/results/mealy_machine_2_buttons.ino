@@ -1,10 +1,10 @@
 // Wiring code generated from an ArduinoML model
-// Application name: dualCheckAlarm
+// Application name: mealy
 
 long debounce = 200;
 
-enum STATE {on, off};
-STATE currentState = off;
+enum STATE {error, on};
+STATE currentState = on;
 
 boolean buttonOneBounceGuard = false;
 long buttonOneLastDebounceTime = 0;
@@ -17,31 +17,28 @@ long timerSinceNewState = millis();
 void setup(){
   pinMode(8, INPUT);  // buttonOne [Sensor]
   pinMode(9, INPUT);  // buttonTwo [Sensor]
-  pinMode(11, OUTPUT); // buzzer [Actuator]
+  pinMode(11, OUTPUT); // ledOne [Actuator]
+  pinMode(12, OUTPUT); // ledTwo [Actuator]
 }
 
 void loop() {
 	switch(currentState){
-		case on:
-			digitalWrite(11,HIGH);
-			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
-			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			if (digitalRead(8) == LOW || digitalRead(9) == LOW && buttonOneBounceGuard && buttonTwoBounceGuard) {
-				buttonOneLastDebounceTime = millis();
-				buttonTwoLastDebounceTime = millis();
-				timerSinceNewState = millis();
-				currentState = off;
-			}
+		case error:
 		break;
-		case off:
+		case on:
 			digitalWrite(11,LOW);
+			digitalWrite(12,LOW);
 			buttonOneBounceGuard = millis() - buttonOneLastDebounceTime > debounce;
-			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
-			if (digitalRead(8) == HIGH && digitalRead(9) == HIGH && buttonOneBounceGuard && buttonTwoBounceGuard) {
+			if (digitalRead(8) == HIGH && buttonOneBounceGuard) {
 				buttonOneLastDebounceTime = millis();
+				timerSinceNewState = millis();
+				currentState = error;
+			}
+			buttonTwoBounceGuard = millis() - buttonTwoLastDebounceTime > debounce;
+			if (digitalRead(9) == HIGH && buttonTwoBounceGuard) {
 				buttonTwoLastDebounceTime = millis();
 				timerSinceNewState = millis();
-				currentState = on;
+				currentState = error;
 			}
 		break;
 	}

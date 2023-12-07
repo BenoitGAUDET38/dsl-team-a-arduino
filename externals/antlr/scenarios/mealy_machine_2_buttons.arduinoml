@@ -1,10 +1,10 @@
-### More scenario
+### Extension scenario
 ## Mealy Machine - Acceptance scenario:
 ## State machine with an error state, to which two transitions can lead.
 ## The first transition has actions that switch LED1 on and LED2 off.
 ## The second transition switches LED1 off and LED2 on.
 
-application mealy
+application mealy_machine_2_buttons
 
 # Declaring bricks
 sensor buttonOne: 8
