@@ -20,9 +20,9 @@ public abstract class Visitor<T> {
 	public abstract void visit(ActionLCD action);
 	public abstract void visit(ActionSensor action);
 
-	public abstract void visit(ActuatorBasic actuator);
+	public abstract void visit(ActuatorPin actuator);
 	public abstract void visit(Sensor sensor);
-	public abstract void visit(ActuatorLCD actuatorLCD);
+	public abstract void visit(ActuatorBus actuatorBus);
 
 
 	/***********************
