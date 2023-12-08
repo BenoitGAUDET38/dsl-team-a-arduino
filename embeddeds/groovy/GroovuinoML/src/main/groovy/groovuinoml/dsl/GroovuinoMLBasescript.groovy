@@ -98,7 +98,7 @@ abstract class GroovuinoMLBasescript extends Script {
 				ConditionSensor condition = new ConditionSensor()
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
-				currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.AND, transition)
+				currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.OR, transition)
 				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
 			}]
 		}
