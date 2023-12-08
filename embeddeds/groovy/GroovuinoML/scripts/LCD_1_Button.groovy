@@ -5,7 +5,7 @@ actuator "led1" pin 12
 
 state "led" means "led1" becomes "high" and "snooze1" becomes "low" and "screen" display "Led : ON" row 0 and "screen" display "Buzzer : OFF" row 1
 state "snooze" means "led1" becomes "low" and "snooze1" becomes "high" and "screen" display "Led : OFF" row 0 and "screen" display "Buzzer : ON" row 1
-state "none" means "led1" becomes "low" and "snooze1" becomes "low" and "screen" display "Led : OFF" row 0 and "screen" display "Buzzer : OFF" row 1
+state "none" means "led1" becomes "low" and "snooze1" becomes "low" and "screen"
 
 initial "none"
 

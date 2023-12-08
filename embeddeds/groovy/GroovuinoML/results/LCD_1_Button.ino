@@ -55,10 +55,6 @@ void loop() {
 		case none:
 			digitalWrite(12,LOW);
 			digitalWrite(11,LOW);
-			lcd.setCursor(0,0);
-			lcd.print("Led : OFF");
-			lcd.setCursor(0,1);
-			lcd.print("Buzzer : OFF");
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			if (digitalRead(9) == HIGH && button1BounceGuard) {
 				button1LastDebounceTime = millis();
