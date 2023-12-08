@@ -1,17 +1,14 @@
 package main.groovy.groovuinoml.dsl
 
-import io.github.mosser.arduinoml.kernel.behavioral.ActionSensor
+import io.github.mosser.arduinoml.kernel.behavioral.ActionActuatorPin
 import io.github.mosser.arduinoml.kernel.behavioral.ActionLCD
 import io.github.mosser.arduinoml.kernel.behavioral.ComposedCondition
 import io.github.mosser.arduinoml.kernel.behavioral.Condition
-import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionDelay
 import io.github.mosser.arduinoml.kernel.behavioral.ConditionSensor
 import io.github.mosser.arduinoml.kernel.behavioral.OPERATOR
-import io.github.mosser.arduinoml.kernel.behavioral.SimpleCondition
 import io.github.mosser.arduinoml.kernel.behavioral.Action
 import io.github.mosser.arduinoml.kernel.behavioral.State
-import io.github.mosser.arduinoml.kernel.structural.Actuator
 import io.github.mosser.arduinoml.kernel.structural.ActuatorBus
 import io.github.mosser.arduinoml.kernel.structural.ActuatorPin
 import io.github.mosser.arduinoml.kernel.structural.Sensor
@@ -43,7 +40,7 @@ abstract class GroovuinoMLBasescript extends Script {
 
 		closure = { actuator -> 
 			def sensor = { signal ->
-				ActionSensor action = new ActionSensor()
+				ActionActuatorPin action = new ActionActuatorPin()
 				action.setActuator(actuator instanceof String ? (ActuatorPin)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorPin)actuator)
 				action.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				actions.add(action)
@@ -53,7 +50,7 @@ abstract class GroovuinoMLBasescript extends Script {
 			def lcd = { text ->
 				[row: { rowNumber ->
 					ActionLCD actionLCD = new ActionLCD()
-					actionLCD.setActuatorLCD(actuator instanceof String ? (ActuatorBus)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorBus)actuator)
+					actionLCD.setActuatorBus(actuator instanceof String ? (ActuatorBus)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorBus)actuator)
 					actionLCD.setDisplayText(true)
 					actionLCD.setText(text)
 					actionLCD.setRowNumber(rowNumber)
@@ -106,7 +103,7 @@ abstract class GroovuinoMLBasescript extends Script {
 
 		withClosure = { actuator ->
 			def sensor = { signal ->
-				ActionSensor action = new ActionSensor()
+				ActionActuatorPin action = new ActionActuatorPin()
 				action.setActuator(actuator instanceof String ? (ActuatorPin)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorPin)actuator)
 				action.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				actions.add(action)
@@ -116,7 +113,7 @@ abstract class GroovuinoMLBasescript extends Script {
 			def lcd = { text ->
 				[row: { rowNumber ->
 					ActionLCD actionLCD = new ActionLCD()
-					actionLCD.setActuatorLCD(actuator instanceof String ? (ActuatorBus)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorBus)actuator)
+					actionLCD.setActuatorBus(actuator instanceof String ? (ActuatorBus)((GroovuinoMLBinding)this.getBinding()).getVariable(actuator) : (ActuatorBus)actuator)
 					actionLCD.setDisplayText(true)
 					actionLCD.setText(text)
 					actionLCD.setRowNumber(rowNumber)

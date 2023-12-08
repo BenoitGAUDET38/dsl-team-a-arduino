@@ -1,5 +1,5 @@
 // Wiring code generated from an ArduinoML model
-// Application name: completeSample
+// Application name: sampleApplication
 
 long debounce = 200;
 

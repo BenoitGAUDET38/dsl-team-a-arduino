@@ -119,7 +119,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void enterActionSensor(ArduinomlParser.ActionSensorContext ctx) {
-        ActionSensor action = new ActionSensor();
+        ActionActuatorPin action = new ActionActuatorPin();
         action.setActuator(basicActuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
 
@@ -128,7 +128,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterActionLCD(ArduinomlParser.ActionLCDContext ctx) {
         ActionLCD actionLCD = new ActionLCD();
-        actionLCD.setActuatorLCD(actuatorBus);
+        actionLCD.setActuatorBus(actuatorBus);
         actionLCD.setDisplayText(ctx.isDisplayed.getText().equals("TRUE"));
         if (ctx.isDisplayed.getText().equals("TRUE")){
             actionLCD.setText(ctx.text.getText().substring(1,ctx.text.getText().length()-1));
@@ -202,14 +202,14 @@ public class ModelBuilder extends ArduinomlBaseListener {
         while (actionContext != null){
             Action action;
             if (actionContext.receiverSensor!=null) {
-                ActionSensor actionSensor = new ActionSensor();
+                ActionActuatorPin actionSensor = new ActionActuatorPin();
                 actionSensor.setActuator(basicActuators.get(actionContext.receiverSensor.getText()));
                 actionSensor.setValue(SIGNAL.valueOf(actionContext.value.getText()));
                 action = actionSensor;
             }
             else {
                 ActionLCD actionLCD = new ActionLCD();
-                actionLCD.setActuatorLCD(actuatorBus);
+                actionLCD.setActuatorBus(actuatorBus);
                 actionLCD.setDisplayText(actionContext.isDisplayed.getText().equals("TRUE"));
                 if (actionContext.isDisplayed.getText().equals("TRUE")){
                     actionLCD.setText(actionContext.text.getText().substring(1,actionContext.text.getText().length()-1));

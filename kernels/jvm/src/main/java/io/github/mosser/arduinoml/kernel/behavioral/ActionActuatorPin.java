@@ -4,18 +4,24 @@ import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.ActuatorPin;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 
-public class ActionSensor extends Action {
+public class ActionActuatorPin extends Action {
     private SIGNAL value;
     private ActuatorPin actuator;
 
-    public SIGNAL getValue() {
-        return value;
-    }
     public SIGNAL getOppositeValue(){
         if(value == SIGNAL.HIGH){
             return SIGNAL.LOW;
         }
         return SIGNAL.HIGH;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public SIGNAL getValue() {
+        return value;
     }
 
     public void setValue(SIGNAL value) {
@@ -31,13 +37,8 @@ public class ActionSensor extends Action {
     }
 
     @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
-    @Override
     public String toString() {
-        return "ActionSensor{" +
+        return "ActionActuatorPin{" +
                 "value=" + value +
                 ", actuator=" + actuator +
                 '}';

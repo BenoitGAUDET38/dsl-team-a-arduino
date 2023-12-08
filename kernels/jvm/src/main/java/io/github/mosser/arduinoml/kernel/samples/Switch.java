@@ -38,21 +38,21 @@ public class Switch {
 		off.setName("off");
 
 		// Creating actions
-		ActionSensor switchTheLightOn = new ActionSensor();
+		ActionActuatorPin switchTheLightOn = new ActionActuatorPin();
 		switchTheLightOn.setActuator(led);
 		switchTheLightOn.setValue(SIGNAL.HIGH);
 
-		ActionSensor switchTheLightOff = new ActionSensor();
+		ActionActuatorPin switchTheLightOff = new ActionActuatorPin();
 		switchTheLightOff.setActuator(led);
 		switchTheLightOff.setValue(SIGNAL.LOW);
 
 		ActionLCD displayText = new ActionLCD();
 		displayText.setDisplayText(true);
-		displayText.setActuatorLCD(lcd);
+		displayText.setActuatorBus(lcd);
 
 		ActionLCD clearText = new ActionLCD();
 		displayText.setDisplayText(false);
-		displayText.setActuatorLCD(lcd);
+		displayText.setActuatorBus(lcd);
 
 		// Binding actions to states
 		on.setActions(Arrays.asList(switchTheLightOn));

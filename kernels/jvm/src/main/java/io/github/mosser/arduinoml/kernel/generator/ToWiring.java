@@ -211,7 +211,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 
 	@Override
-	public void visit(ActionSensor actionSensor) {
+	public void visit(ActionActuatorPin actionSensor) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}

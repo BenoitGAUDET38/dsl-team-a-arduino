@@ -11,6 +11,10 @@ public class ActionLCD extends Action {
 
 	private String text;
 
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 
 	public boolean isDisplayText() {
 		return displayText;
@@ -20,11 +24,19 @@ public class ActionLCD extends Action {
 		this.displayText = displayText;
 	}
 
-	public ActuatorBus getActuatorLCD() {
+	public int getRowNumber() {
+		return rowNumber;
+	}
+
+	public void setRowNumber(int rowNumber) {
+		this.rowNumber = rowNumber;
+	}
+
+	public ActuatorBus getActuatorBus() {
 		return actuatorBus;
 	}
 
-	public void setActuatorLCD(ActuatorBus actuatorBus) {
+	public void setActuatorBus(ActuatorBus actuatorBus) {
 		this.actuatorBus = actuatorBus;
 	}
 
@@ -36,26 +48,13 @@ public class ActionLCD extends Action {
 		this.text = text;
 	}
 
-	public int getRowNumber() {
-		return rowNumber;
-	}
-
-	public void setRowNumber(int rowNumber) {
-		this.rowNumber = rowNumber;
-	}
-
-	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
-
 	@Override
 	public String toString() {
-		return "Action{" +
+		return "ActionLCD{" +
 				"displayText=" + displayText +
-				", actuator=" + actuatorBus +
-				", text=" + text +
 				", rowNumber=" + rowNumber +
+				", actuatorBus=" + actuatorBus +
+				", text='" + text + '\'' +
 				'}';
 	}
 }
