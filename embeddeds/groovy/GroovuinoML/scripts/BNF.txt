@@ -8,13 +8,13 @@ Action =
 Signal =
     'high' | 'low';
 Transition =
-    'from' String 'to' String (TemporalCondition ['with' Action {'and' Action}] | 'when' Condition {RecursiveCond} [TemporalCondition {RecursiveCond}] ['with' Action {'and' Action}]);
+    'from' String 'to' String ('after' TemporalCondition ['with' Action {'and' Action}] | 'when' Condition {RecursiveCond} [('andAfter' | 'orAfter') TemporalCondition {RecursiveCond}] ['with' Action {'and' Action}]);
 Condition =
     String 'becomes' Signal;
 RecursiveCond =
     ('and' | 'or') Condition;
 TemporalCondition =
-    'after' Int ('ms' | 's' | 'min');
+    Int ('ms' | 's' | 'min');
 Application =
     (Brick)+;
     (State)+;

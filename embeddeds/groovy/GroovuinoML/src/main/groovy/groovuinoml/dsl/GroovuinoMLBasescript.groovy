@@ -80,7 +80,8 @@ abstract class GroovuinoMLBasescript extends Script {
 		def andClosure
 		def orClosure
 		def withClosure
-		def afterClosure
+		def andAfterClosure
+		def orAfterClosure
 
 		andClosure = { sensor ->
 			[becomes: { signal ->
@@ -88,7 +89,7 @@ abstract class GroovuinoMLBasescript extends Script {
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.AND, transition)
-				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
+				[and: andClosure, or: orClosure, with: withClosure, andAfter: andAfterClosure, orAfter: orAfterClosure]
 			}]
 		}
 
@@ -99,7 +100,7 @@ abstract class GroovuinoMLBasescript extends Script {
 				condition.setSensor(sensor instanceof String ? (Sensor)((GroovuinoMLBinding)this.getBinding()).getVariable(sensor) : (Sensor)sensor)
 				condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 				currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.OR, transition)
-				[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
+				[and: andClosure, or: orClosure, with: withClosure, andAfter: andAfterClosure, orAfter: orAfterClosure]
 			}]
 		}
 
@@ -127,10 +128,17 @@ abstract class GroovuinoMLBasescript extends Script {
 			[becomes: sensor, display: lcd]
 		}
 
-		afterClosure = { time ->
+		andAfterClosure = { time ->
 			Condition condition = new ConditionDelay()
 			condition.setDelay((int) time.amount * time.unit.multiplier)
 			currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.AND, transition)
+			[and: andClosure, or: orClosure, with: withClosure]
+		}
+
+		orAfterClosure = { time ->
+			Condition condition = new ConditionDelay()
+			condition.setDelay((int) time.amount * time.unit.multiplier)
+			currentCondition = updateConditionTree(currentCondition, condition, OPERATOR.OR, transition)
 			[and: andClosure, or: orClosure, with: withClosure]
 		}
 
@@ -147,7 +155,7 @@ abstract class GroovuinoMLBasescript extends Script {
 					condition.setValue(signal instanceof String ? (SIGNAL)((GroovuinoMLBinding)this.getBinding()).getVariable(signal) : (SIGNAL)signal)
 					currentCondition.setLeft(condition)
 					transition.setCondition(condition)
-					[and: andClosure, or: orClosure, with: withClosure, after: afterClosure]
+					[and: andClosure, or: orClosure, with: withClosure, andAfter: andAfterClosure, orAfter: orAfterClosure]
 				}]
 			}, after: { time ->
 				ConditionDelay condition = new ConditionDelay()
