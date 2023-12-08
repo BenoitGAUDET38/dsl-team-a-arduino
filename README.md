@@ -60,7 +60,13 @@ COMMENT             : '#' ~( '\r' | '\n' )*     -> skip;     // Single line comm
 ### Table of symbols
 | Usage | Notation |
 |:-----:|:--------:|
-|       |          |
+|   Definition between an element and its syntax    |    :      |
+|   Termination                                     |     ;     |
+|   Definition between a variable and its value     |     =     |
+|   Grouping                                        |  (...)    |
+|    Alternation                                    |     \|    |
+|    Optional repetition (once or more)             |    +      |
+|    Optional element (once or none)                |    ?      |
 ### Script example
 ```java
 application sampleApplication
@@ -115,7 +121,7 @@ Application =
 |:-------------------------------------:|:-------------:|
 |              Definition               |       =       |
 |              Termination              |       ;       |
-|              Alternation              |    &#124;     |
+|              Alternation              |        \|     |
 |               Grouping                |     (...)     |
 | At least one repetition (one or more) |    (...)+     |
 |        Optional (none or once)        |     [...]     |
