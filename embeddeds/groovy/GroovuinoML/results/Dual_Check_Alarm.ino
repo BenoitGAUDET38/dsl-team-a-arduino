@@ -26,7 +26,7 @@ void loop() {
 			digitalWrite(11,HIGH);
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
 			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
-			if (digitalRead(9) == LOW && digitalRead(10) == LOW && button1BounceGuard && button2BounceGuard) {
+			if (digitalRead(9) == LOW || digitalRead(10) == LOW && button1BounceGuard && button2BounceGuard) {
 				button1LastDebounceTime = millis();
 				button2LastDebounceTime = millis();
 				timerSinceNewState = millis();
