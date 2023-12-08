@@ -7,8 +7,6 @@ public abstract class Brick implements NamedElement, Visitable {
 
 	private String name;
 
-
-
 	@Override
 	public String getName() {
 		return name;
