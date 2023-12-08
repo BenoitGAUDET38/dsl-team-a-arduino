@@ -40,8 +40,10 @@ void loop() {
 			lcd.setCursor(0,0);
 			lcd.print("Led : OFF");
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
-			if (digitalRead(9) == HIGH && button1BounceGuard) {
+			button2BounceGuard = millis() - button2LastDebounceTime > debounce;
+			if (digitalRead(9) == HIGH && digitalRead(10) == HIGH && millis() - timerSinceNewState > 1000 && button1BounceGuard && button2BounceGuard) {
 				button1LastDebounceTime = millis();
+				button2LastDebounceTime = millis();
 				timerSinceNewState = millis();
 				currentState = on;
 				lcd.clear();

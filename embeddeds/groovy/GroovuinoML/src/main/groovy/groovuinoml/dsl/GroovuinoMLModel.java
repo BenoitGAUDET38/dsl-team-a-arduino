@@ -54,7 +54,7 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, state);
 	}
 	
-	public void createTransition(State from, State to, ComposedCondition condition, List<Action> actions) {
+	public Transition createTransition(State from, State to, ComposedCondition condition, List<Action> actions) {
 		Transition transition = new Transition();
 		transition.setNext(to);
 		if (condition.getRight() == null) {
@@ -64,6 +64,7 @@ public class GroovuinoMLModel {
 		}
 		transition.setActions(actions);
 		from.addTransition(transition);
+		return transition;
 	}
 	
 	public void setInitialState(State state) {

@@ -25,7 +25,7 @@ void loop() {
 				currentState = off;
 			}
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
-			if (digitalRead(9) == HIGH && button1BounceGuard) {
+			if (digitalRead(9) == HIGH && millis() - timerSinceNewState > 5000 && button1BounceGuard) {
 				button1LastDebounceTime = millis();
 				timerSinceNewState = millis();
 				currentState = off;
@@ -34,7 +34,7 @@ void loop() {
 		case off:
 			digitalWrite(11,LOW);
 			button1BounceGuard = millis() - button1LastDebounceTime > debounce;
-			if (digitalRead(9) == HIGH && button1BounceGuard) {
+			if (digitalRead(9) == HIGH && millis() - timerSinceNewState > 5000 && button1BounceGuard) {
 				button1LastDebounceTime = millis();
 				timerSinceNewState = millis();
 				currentState = on;
